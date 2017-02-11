@@ -34,9 +34,9 @@ class State {
     getIconState(state) {
         return {
             path: state ? {
-                48: '../icons/sokhan-48.png'
+                48: '../images/sokhan-48.png'
             } : {
-                48: '../icons/sokhan-48-off.png'
+                48: '../images/sokhan-48-off.png'
             }
         };
     }

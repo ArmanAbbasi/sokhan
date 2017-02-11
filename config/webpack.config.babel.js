@@ -1,11 +1,13 @@
-import webpack from 'webpack';
 import path from 'path';
+import webpack from 'webpack';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 
 export default {
     entry: {
         bundle: path.resolve(__dirname, '../src/lib', 'sokhan.js'),
+        background: path.resolve(__dirname, '../src/lib', 'background.js'),
+        menu: path.resolve(__dirname, '../src/menu', 'menu.js'),
         main: path.resolve(__dirname, '../src/stylesheets', 'main.scss')
     },
 
@@ -16,7 +18,6 @@ export default {
     },
 
     resolve: {
-        extensions: ['.js', '.css', '.scss'],
         modules: [
             'client',
             'common',
@@ -49,13 +50,24 @@ export default {
 
     plugins: [
         new CopyWebpackPlugin([{
-            from: '../src/_locales/**/*',
-            to: 'images',
-            flatten: false
+            context: './src/',
+            from: '_locales/**/*.json',
+            to: '../build/'
         }, {
-            from: '../src/icons/**/*',
-            to: 'icons',
-            flatten: false
+            context: './src/',
+            from: 'images/**/*.png',
+            to: '../build/'
+        }, {
+            context: './src/',
+            from: 'menu/**/*.html',
+            to: '../build/'
+        }, {
+            context: './src/',
+            from: 'sound/**/*.mp3',
+            to: '../build/'
+        }, {
+            from: './src/manifest.json',
+            to: '../build/manifest.json'
         }]),
         new ExtractTextPlugin({
             filename: '[name].css'
