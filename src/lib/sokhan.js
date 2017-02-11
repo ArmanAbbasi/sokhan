@@ -19,8 +19,7 @@
 import config from './config';
 
 class Sokhan {
-    constructor(speech) {
-        this.speech = speech;
+    constructor() {
         this.isActive = true;
         this.foundTextTimeout = null;
 
@@ -138,7 +137,7 @@ class Sokhan {
     }
 
     stopSpeech() {
-        this.speech.cancel();
+        speechSynthesis.cancel();
     }
 
     sokhan(text) {
@@ -151,12 +150,12 @@ class Sokhan {
             return match.replace('.', ' . ');
         });
 
-        if (!config.utter || !config.utter.voice || !this.speech) {
+        if (!config.utter || !config.utter.voice || !speechSynthesis) {
             config.setLanguageDefaults();
         }
 
         config.utter.text = text;
-        this.speech.speak(config.utter);
+        speechSynthesis.speak(config.utter);
     }
 
     bindEventToInputField(e) {
@@ -174,7 +173,7 @@ class Sokhan {
             chrome.storage.sync.set({active: this.isActive});
         } else if (key === 'Shift') {
             this.stopSpeech();
-            this.speech.speak(window.sokhanConf.utter);
+            speechSynthesis.speak(window.sokhanConf.utter);
         } else {
             this.stopSpeech();
             this.sokhan(key);
@@ -260,4 +259,4 @@ class Sokhan {
     }
 }
 
-new Sokhan(speechSynthesis);
+new Sokhan();
