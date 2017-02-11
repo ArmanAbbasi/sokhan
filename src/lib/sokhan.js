@@ -14,11 +14,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
+import config from './config';
 
 class Sokhan {
-    constructor(speech, config) {
+    constructor(speech) {
         this.speech = speech;
-        this.config = config;
         this.isActive = true;
         this.foundTextTimeout = null;
 
@@ -34,8 +34,8 @@ class Sokhan {
     }
 
     findParentLink(target) {
-        var i = 0;
-        var tmp = target;
+        let i = 0;
+        let tmp = target;
 
         while (target && target.tagName !== 'A' && i < 5) {
             tmp = tmp.parentElement;
@@ -71,7 +71,7 @@ class Sokhan {
     }
 
     handleSpecialElements(el, isOnLoad) {
-        var text = '',
+        let text = '',
             numItems;
 
         if (el.tagName === 'SPAN' || el.tagName === 'DIV' || el.tagName === 'IMG') {
@@ -90,10 +90,10 @@ class Sokhan {
             text = (numItems || '') + (el.tagName === 'SELECT' ? (el.selectedOptions[0].textContent || el.getAttribute('aria-label') || 'not defined') : (el.placeholder || el.value || el.textContent || el.title || el.getAttribute('aria-label') || ''));
         }
 
-        var type = this.getTextForTypeOfElement(el);
+        let type = this.getTextForTypeOfElement(el);
 
         if (!text && el.getAttribute('aria-labelledby')) {
-            var textEl = document.getElementById(el.getAttribute('aria-labelledby'));
+            let textEl = document.getElementById(el.getAttribute('aria-labelledby'));
             if (textEl) {
                 text = (textEl.textContent || '').trim();
             }
@@ -106,7 +106,7 @@ class Sokhan {
     }
 
     handleTextFields(el) {
-        var text = (this.getAttribute(el, 'aria-label') || el.textContent || el.alt || '').trim(),
+        let text = (this.getAttribute(el, 'aria-label') || el.textContent || el.alt || '').trim(),
             largeSpaces = text && text.match(/\s{2,}/g),
             largeSpacesSum = largeSpaces && largeSpaces.length;
 
@@ -119,17 +119,17 @@ class Sokhan {
 
     analyseElementAndFindText(target, isOnLoad) {
         if (this.getAttribute(target, 'aria-hidden')) { return; }
-        this[this.config.elementTextMap[target.tagName] ? 'handleSpecialElements' : 'handleTextFields'].call(this, target, isOnLoad);
+        this[config.elementTextMap[target.tagName] ? 'handleSpecialElements' : 'handleTextFields'].call(this, target, isOnLoad);
     }
 
     getTextForTypeOfElement(el) {
-        var title = this.config.elementTextMap[el.tagName];
+        let title = config.elementTextMap[el.tagName];
         let self = this;
         return (typeof title === 'string' ? title : (function () {
-            var labelEl = document.querySelector('[for="' + el.id + '"]');
-            var text = (labelEl && labelEl.textContent) || '';
-            var checked = (el.type === 'checkbox' || el.type === 'radio') ? (el.checked ? 'checked': 'unchecked') : '';
-            var relatedText = text ? (' for ' + text) : '';
+            let labelEl = document.querySelector('[for="' + el.id + '"]');
+            let text = (labelEl && labelEl.textContent) || '';
+            let checked = (el.type === 'checkbox' || el.type === 'radio') ? (el.checked ? 'checked': 'unchecked') : '';
+            let relatedText = text ? (' for ' + text) : '';
 
             return self.config.elementTextMap[el.tagName][el.type] + checked + relatedText;
         }()));
@@ -149,12 +149,12 @@ class Sokhan {
             return match.replace('.', ' . ');
         });
 
-        if (!this.config.utter || !this.config.utter.voice || !this.speech) {
-            this.config.setLanguageDefaults();
+        if (!config.utter || !config.utter.voice || !this.speech) {
+            config.setLanguageDefaults();
         }
 
-        this.config.utter.text = text;
-        this.speech.speak(this.config.utter);
+        config.utter.text = text;
+        this.speech.speak(config.utter);
     }
 
     bindEventToInputField(e) {
@@ -164,7 +164,7 @@ class Sokhan {
     }
 
     onKeyDown(e) {
-        var key = e.key;
+        let key = e.key;
 
         if (key === 'Control') {
             this.stopSpeech();
@@ -181,11 +181,11 @@ class Sokhan {
 
     onSelectMenuClicked(e) {
         this.stopSpeech();
-        var target = e.currentTarget,
+        let target = e.currentTarget,
             choices = target.children,
             str = 'Choices: ';
 
-        for (var i in choices) {
+        for (let i in choices) {
             if (choices.hasOwnProperty(i) && choices[i].textContent) {
                 str += choices[i].textContent + ', ';
             }
@@ -196,7 +196,7 @@ class Sokhan {
 
     onSelectMenuChanged(e) {
         this.stopSpeech();
-        var el = e.currentTarget,
+        let el = e.currentTarget,
             str = 'Selection menu changed to ' + (el.selectedOptions[0].textContent || el.getAttribute('aria-label') || 'not defined');
 
         this.sokhan(str);
@@ -222,7 +222,7 @@ class Sokhan {
             }
             self.config.setLanguageDefaults();
         });
-        var inputFieldEls = document.getElementsByTagName('input'),
+        let inputFieldEls = document.getElementsByTagName('input'),
             linkEls = document.getElementsByTagName('a'),
             buttonEls = document.getElementsByTagName('button'),
             selectFieldEls = document.getElementsByTagName('select'),
@@ -258,4 +258,4 @@ class Sokhan {
     }
 }
 
-new Sokhan(window.speechSynthesis, window.sokhanConf);
+new Sokhan(window.speechSynthesis);

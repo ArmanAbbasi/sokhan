@@ -14,7 +14,7 @@
 
     "content_scripts": [{
         "matches": ["*://*/*"],
-        "js": ["lib/define.js", "lib/sokhan.js"]
+        "js": ["sokhan.js"]
     }],
 
     "browser_action": {

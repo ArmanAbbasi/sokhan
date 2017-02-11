@@ -15,13 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-(function (window, Speech) {
-    'use strict';
-    var siteMetaTag = document.documentElement && document.documentElement.getAttribute('lang'),
-        regMetaTag = siteMetaTag && /[a-z]+/.exec(siteMetaTag),
-        chosenMetaTag = regMetaTag && regMetaTag[0];
+const config = () => {
+    let Speech = window.SpeechSynthesisUtterance;
+    let siteMetaTag = document.documentElement && document.documentElement.getAttribute('lang');
+    let regMetaTag = siteMetaTag && /[a-z]+/.exec(siteMetaTag);
+    let chosenMetaTag = regMetaTag && regMetaTag[0];
 
-    window.sokhanConf = {
+    let config = {
         defaultGender: 'male',
         defaultLang: 'en',
         altGender: 'female',
@@ -100,11 +100,11 @@
                 male: '',
                 female: 'Melina'
             },
-            'da': { //Denmarkian
+            'da': { //Danish
                 male: '',
                 female: 'Sara'
             },
-            'fi': { //Finlandian
+            'fi': { //Finish
                 male: '',
                 female: 'Satu'
             },
@@ -156,29 +156,29 @@
     };
 
     chrome.storage.sync.get('languageSelection', resp => {
-        window.sokhanConf.defaultLang = resp.languageSelection || 'en';
+        config.defaultLang = resp.languageSelection || 'en';
     });
 
     chrome.storage.sync.get('gender', (resp) => {
         if (!resp.gender) {
-            window.sokhanConf.defaultGender = 'female';
-            window.sokhanConf.altGender = 'male';
-            window.sokhanConf.setLanguageDefaults();
+            config.defaultGender = 'female';
+            config.altGender = 'male';
+            config.setLanguageDefaults();
         }
     });
 
     chrome.storage.sync.get('rate', (resp) => {
-        window.sokhanConf.rate = resp.rate;
-        window.sokhanConf.setLanguageDefaults();
+        config.rate = resp.rate;
+        config.setLanguageDefaults();
     });
 
     chrome.storage.sync.get('autoDetect', (resp) => {
         if (!resp.autoDetect) {
-            window.sokhanConf.autoDetect =  resp.autoDetect;
+            config.autoDetect =  resp.autoDetect;
         }
     });
 
-    if (!window.sokhanConf.langMetaTag && window.sokhanConf.autoDetect) {
+    if (!config.langMetaTag && config.autoDetect) {
         var p = document.getElementsByTagName('p'),
             pText,
             i,
@@ -191,8 +191,8 @@
                     if (num === 3) { break; }
                     chrome.i18n.detectLanguage(pText, (lang) => {
                         if (lang && lang.isReliable && lang.languages.length && lang.languages[0].percentage > 50) {
-                            window.sokhanConf.langMetaTag = lang.languages[0].language;
-                            window.sokhanConf.setLanguageDefaults();
+                            config.langMetaTag = lang.languages[0].language;
+                            config.setLanguageDefaults();
                         }
                     });
                 }
@@ -201,21 +201,25 @@
         }
     }
 
-    window.sokhanConf.fallbackVoice = window.sokhanConf.availableVoices[window.sokhanConf.defaultLang][window.sokhanConf.defaultGender] || window.sokhanConf.availableVoices[window.sokhanConf.defaultLang][window.sokhanConf.altGender];
-    window.sokhanConf.setLanguageDefaults = function () {
+    config.fallbackVoice = config.availableVoices[config.defaultLang][config.defaultGender] || config.availableVoices[config.defaultLang][config.altGender];
+    config.setLanguageDefaults = function () {
         let foundVoice = (function () {
-            let langMeta = window.sokhanConf.langMetaTag,
-                isLangFound = window.sokhanConf.availableVoices[langMeta] || window.sokhanConf.availableVoices[window.sokhanConf.defaultLang],
-                isVoiceFound = isLangFound ? (isLangFound[window.sokhanConf.defaultGender] || isLangFound[window.sokhanConf.altGender]) : '';
+            let langMeta = config.langMetaTag,
+                isLangFound = config.availableVoices[langMeta] || config.availableVoices[config.defaultLang],
+                isVoiceFound = isLangFound ? (isLangFound[config.defaultGender] || isLangFound[config.altGender]) : '';
 
             return isVoiceFound;
         }());
 
-        window.sokhanConf.utter = new Speech('');
-        window.sokhanConf.voices = window.speechSynthesis.getVoices();
-        window.sokhanConf.utter.voice = window.sokhanConf.voices.filter(function (voice) {
+        config.utter = new Speech('');
+        config.voices = window.speechSynthesis.getVoices();
+        config.utter.voice = config.voices.filter(function (voice) {
             return voice.name === foundVoice;
         })[0];
-        window.sokhanConf.utter.rate = window.sokhanConf.rate;
+        config.utter.rate = config.rate;
     };
-}(window, window.SpeechSynthesisUtterance));
+
+    return config;
+};
+
+export default config;

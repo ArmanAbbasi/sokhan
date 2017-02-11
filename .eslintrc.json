@@ -6,7 +6,8 @@
         "describe": true,
         "it": true,
         "expect": true,
-        "chrome": true
+        "chrome": true,
+        "SpeechSynthesisUtterance": true
     },
 
     "env": {
