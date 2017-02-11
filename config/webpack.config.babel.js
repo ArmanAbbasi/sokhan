@@ -5,17 +5,14 @@ import  HtmlWebpackPlugin from 'html-webpack-plugin';
 
 export default {
     entry: {
-        app: path.resolve(__dirname, 'src', 'App.js'),
-        main: path.resolve(__dirname, 'src/stylesheets', 'global.scss'),
-        vendor: [
-            'react'
-        ]
+        bundle: path.resolve(__dirname, '../lib', 'App.js'),
+        main: path.resolve(__dirname, 'src/stylesheets', 'main.scss')
     },
 
     output: {
-        path: path.resolve(__dirname, 'dist'),
-        publicPath: '/dist/',
-        filename: `[name].${process.env.NODE_ENV === 'production' ? '[chunkhash].' : ''}js`
+        path: path.resolve(__dirname, '../build'),
+        publicPath: '/build/',
+        filename: '[name].js'
     },
 
     resolve: {
@@ -65,9 +62,6 @@ export default {
             compress: {
                 warnings: false
             }
-        }),
-        new webpack.optimize.CommonsChunkPlugin({
-            name: 'vendor'
         }),
         new HtmlWebpackPlugin({
             filename: '../src/views/partials/embeds.hbs',
