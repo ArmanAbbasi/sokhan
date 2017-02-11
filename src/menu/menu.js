@@ -14,7 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-/* globals chrome */
+/* globals browser */
+
+import chromeApiLayer from '../browser/chromeApiLayer';
 
 class Menu {
     constructor () {
@@ -29,14 +31,11 @@ class Menu {
             fallbackLanguage: document.getElementById('languageSelection')
         };
         this.isSokhanActive = true;
-        this.storage = chrome.storage.sync;
-        this.setIcon = chrome.browserAction.setIcon;
-        this.management = chrome.management;
         this.init();
     }
 
     setDefaults() {
-        this.storage.get('gender', resp => {
+        chromeApiLayer.getStorage('gender', resp => {
             if (resp.gender) {
                 this.els.male.checked = true;
             } else {
@@ -45,18 +44,18 @@ class Menu {
             }
         });
 
-        this.storage.get('active', resp => {
+        chromeApiLayer.getStorage('active', resp => {
             this.isSokhanActive = typeof resp.active === 'boolean' ? resp.active : true;
-            this.setIcon(this.getCurrentIconStatePath());
+            chromeApiLayer.setIcon(this.getCurrentIconStatePath());
         });
 
-        this.storage.get('autoDetect', resp => {
+        chromeApiLayer.getStorage('autoDetect', resp => {
             if (!resp.autoDetect) {
                 this.els.autoDetect.checked = resp.autoDetect;
             }
         });
 
-        this.storage.get('languageSelection', resp => {
+        chromeApiLayer.getStorage('languageSelection', resp => {
             if (resp.languageSelection) {
                 document.querySelector('[value="' + resp.languageSelection + '"]').selected = true;
             }
@@ -70,7 +69,7 @@ class Menu {
 
         if (type === 'active') {
             checked = this.isSokhanActive = !this.isSokhanActive;
-            this.setIcon(this.getCurrentIconStatePath());
+            chromeApiLayer.setIcon(this.getCurrentIconStatePath());
         } else if (type === 'gender') {
             checked = target.value !== 'female';
         } else if (type === 'languageSelection') {
@@ -78,7 +77,7 @@ class Menu {
             this.tts('Selected: ' + target.selectedOptions[0].textContent);
         }
 
-        this.storage.set({[type]: checked});
+        chromeApiLayer.setStorage({[type]: checked});
     }
 
     onAction (e) {
@@ -107,7 +106,7 @@ class Menu {
 
     init() {
         this.setDefaults();
-        this.tts = text => chrome.tts.speak(text, this.default);
+        this.tts = text => chromeApiLayer.speak(text, this.default);
 
         this.els.pause.addEventListener('click', e => this.onStateChange(e));
         this.els.male.addEventListener('change', e => this.onStateChange(e));
@@ -115,11 +114,7 @@ class Menu {
         this.els.autoDetect.addEventListener('change', e => this.onStateChange(e));
         this.els.fallbackLanguage.addEventListener('change', e => this.onStateChange(e));
 
-        this.els.disable.addEventListener('click', () => {
-            this.management.getSelf(extensionInfo => {
-                this.management.setEnabled(extensionInfo.id, false);
-            });
-        });
+        this.els.disable.addEventListener('click', () => chromeApiLayer.setDisabled());
 
         for (let i in this.els.aria) {
             if (this.els.aria.hasOwnProperty(i)) {

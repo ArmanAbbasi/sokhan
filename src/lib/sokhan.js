@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-/* globals chrome, speechSynthesis */
+/* globals browser, speechSynthesis */
 
 import config from './config';
 import helper from './helper';
