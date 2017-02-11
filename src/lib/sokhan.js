@@ -20,11 +20,11 @@ import config from './config';
 
 class Sokhan {
     constructor() {
-        this.isActive = true;
+        this.isSokhanActive = true;
         this.foundTextTimeout = null;
 
         chrome.storage.sync.get('active', resp => {
-            this.isActive = (typeof resp.active === 'boolean' ? resp.active : true);
+            this.isSokhanActive = (typeof resp.active === 'boolean' ? resp.active : true);
         });
 
         document.addEventListener('readystatechange', () => {
@@ -141,7 +141,7 @@ class Sokhan {
     }
 
     sokhan(text) {
-        if (!this.isActive) {
+        if (!this.isSokhanActive) {
             return;
         }
 
@@ -169,8 +169,8 @@ class Sokhan {
 
         if (key === 'Control') {
             this.stopSpeech();
-            this.isActive = !this.isActive;
-            chrome.storage.sync.set({active: this.isActive});
+            this.isSokhanActive = !this.isSokhanActive;
+            chrome.storage.sync.set({active: this.isSokhanActive});
         } else if (key === 'Shift') {
             this.stopSpeech();
             speechSynthesis.speak(window.sokhanConf.utter);
