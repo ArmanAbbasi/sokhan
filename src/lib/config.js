@@ -14,9 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
+/* globals SpeechSynthesisUtterance */
 
+/**
+ * @name config
+ * @description
+ * */
 const config = () => {
-    let Speech = window.SpeechSynthesisUtterance;
     let siteMetaTag = document.documentElement && document.documentElement.getAttribute('lang');
     let regMetaTag = siteMetaTag && /[a-z]+/.exec(siteMetaTag);
     let chosenMetaTag = regMetaTag && regMetaTag[0];
@@ -179,12 +183,11 @@ const config = () => {
     });
 
     if (!config.langMetaTag && config.autoDetect) {
-        var p = document.getElementsByTagName('p'),
-            pText,
-            i,
-            num = 0;
+        let p = document.getElementsByTagName('p');
+        let pText;
+        let num = 0;
 
-        for (i in p) {
+        for (let i in p) {
             if (p.hasOwnProperty(i)) {
                 pText = p && p[0] && p[0].textContent;
                 if (pText) {
@@ -202,18 +205,17 @@ const config = () => {
     }
 
     config.fallbackVoice = config.availableVoices[config.defaultLang][config.defaultGender] || config.availableVoices[config.defaultLang][config.altGender];
-    config.setLanguageDefaults = function () {
-        let foundVoice = (function () {
-            let langMeta = config.langMetaTag,
-                isLangFound = config.availableVoices[langMeta] || config.availableVoices[config.defaultLang],
-                isVoiceFound = isLangFound ? (isLangFound[config.defaultGender] || isLangFound[config.altGender]) : '';
+    config.setLanguageDefaults = () => {
+        const foundVoice = (() => {
+            const langMeta = config.langMetaTag;
+            const isLangFound = config.availableVoices[langMeta] || config.availableVoices[config.defaultLang];
 
-            return isVoiceFound;
-        }());
+            return isLangFound ? (isLangFound[config.defaultGender] || isLangFound[config.altGender]) : '';
+        })();
 
-        config.utter = new Speech('');
+        config.utter = new SpeechSynthesisUtterance('');
         config.voices = window.speechSynthesis.getVoices();
-        config.utter.voice = config.voices.filter(function (voice) {
+        config.utter.voice = config.voices.filter((voice) => {
             return voice.name === foundVoice;
         })[0];
         config.utter.rate = config.rate;
