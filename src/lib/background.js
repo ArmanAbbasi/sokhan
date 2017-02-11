@@ -28,7 +28,7 @@ class State {
         this.setIcon = chrome.browserAction.setIcon;
         this.storage = chrome.storage.sync;
         this.rate = 1.0;
-        this.init();
+        this.bindEvents();
     }
 
     getIconState(state) {
@@ -45,33 +45,32 @@ class State {
         this.audio[type].play();
     }
 
-    init() {
-        let self = this;
-        chrome.storage.onChanged.addListener(function(changes) {
+    bindEvents() {
+        chrome.storage.onChanged.addListener((changes) => {
             if (changes.active) {
-                self.isActive = changes.active.newValue;
-                self.playAudio('ding');
-                self.setIcon(self.getIconState(self.isActive));
+                this.isActive = changes.active.newValue;
+                this.playAudio('ding');
+                this.setIcon(this.getIconState(this.isActive));
             }
         });
 
-        chrome.commands.onCommand.addListener(function(command) {
-            console.log('Command:', command);
+        chrome.commands.onCommand.addListener((command) => {
             if (command === 'Ctrl+Right') {
-                self.rate += 0.1;
-                self.storage.set({'rate': self.rate});
-                self.playAudio('volume');
+                this.rate += 0.1;
+                this.storage.set({'rate': this.rate});
+                this.playAudio('volume');
             } else if (command === 'Ctrl+Left') {
-                self.rate -= 0.1;
-                self.storage.set({'rate': self.rate});
-                self.playAudio('volume');
+                this.rate -= 0.1;
+                this.storage.set({'rate': this.rate});
+                this.playAudio('volume');
             }
         });
 
         chrome.storage.sync.get('active', resp => {
-            self.isActive = (typeof resp.active === 'boolean' ? resp.active : true);
-            self.setIcon(self.getIconState(self.isActive));
+            this.isActive = (typeof resp.active === 'boolean' ? resp.active : true);
+            this.setIcon(this.getIconState(this.isActive));
         });
+
         chrome.tabs.onCreated.addListener(() => this.playAudio('open'));
         chrome.tabs.onRemoved.addListener(() => this.playAudio('trash'));
         chrome.tabs.onActivated.addListener(() => this.playAudio('swoosh'));

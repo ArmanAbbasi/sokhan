@@ -6,7 +6,7 @@
         "describe": true,
         "it": true,
         "expect": true,
-        "__INITIAL_STATE__": true
+        "chrome": true
     },
 
     "env": {
