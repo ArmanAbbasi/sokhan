@@ -1,3 +1,6 @@
+3.0
+Refactored the code to ES6 and parsed for older browser versions
+
 2.1
 Upgraded build process
 

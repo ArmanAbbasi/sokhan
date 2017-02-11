@@ -19,6 +19,7 @@
 import config from './config';
 import helper from './helper';
 
+
 class Sokhan {
     constructor() {
         this.isSokhanActive = true;
