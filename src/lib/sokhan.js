@@ -180,6 +180,7 @@ class Sokhan {
     }
 
     init() {
+        debugger;
         this.sokhan(document.title || document.querySelector('h1').textContent || 'unknown website title ');
         setTimeout(() => {
             this.analyseElementAndFindText(document.activeElement, true);

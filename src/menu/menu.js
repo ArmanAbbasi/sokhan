@@ -28,7 +28,7 @@ class Menu {
             aria: document.querySelectorAll('[aria-label]'),
             fallbackLanguage: document.getElementById('languageSelection')
         };
-        this.isActive = true;
+        this.isSokhanActive = true;
         this.storage = chrome.storage.sync;
         this.setIcon = chrome.browserAction.setIcon;
         this.management = chrome.management;
@@ -46,8 +46,8 @@ class Menu {
         });
 
         this.storage.get('active', resp => {
-            this.isActive = (typeof resp.active === 'boolean' ? resp.active : true);
-            this.setIcon(this.getIconState(this.isActive));
+            this.isSokhanActive = typeof resp.active === 'boolean' ? resp.active : true;
+            this.setIcon(this.getCurrentIconStatePath());
         });
 
         this.storage.get('autoDetect', resp => {
@@ -69,8 +69,8 @@ class Menu {
             checked = target.checked;
 
         if (type === 'active') {
-            checked = this.isActive = !this.isActive;
-            this.setIcon(this.getIconState(this.isActive));
+            checked = this.isSokhanActive = !this.isSokhanActive;
+            this.setIcon(this.getCurrentIconStatePath());
         } else if (type === 'gender') {
             checked = target.value !== 'female';
         } else if (type === 'languageSelection') {
@@ -82,7 +82,7 @@ class Menu {
     }
 
     onAction (e) {
-        if (!this.isActive) { return; }
+        if (!this.isSokhanActive) { return; }
         let target = e.currentTarget,
             label = target.getAttribute('aria-label'),
             text = label === '=' ? target.textContent.trim() : label;
@@ -94,13 +94,14 @@ class Menu {
         this.tts(text);
     }
 
-    getIconState(state) {
+    /**
+     * @name getCurrentIconStatePath
+     * @returns {Object} Contains path to relevant icon to be displayed
+     * @description Checks icon to be displayed based on active state
+     * */
+    getCurrentIconStatePath() {
         return {
-            path: state ? {
-                48: '../images/sokhan-48.png'
-            } : {
-                48: '../images/sokhan-48-off.png'
-            }
+            path: `../images/sokhan-48${this.isSokhanActive ? '' : '-off'}.png`
         };
     }
 
