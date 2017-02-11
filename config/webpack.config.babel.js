@@ -1,12 +1,12 @@
 import webpack from 'webpack';
 import path from 'path';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
-import  HtmlWebpackPlugin from 'html-webpack-plugin';
+import CopyWebpackPlugin from 'copy-webpack-plugin';
 
 export default {
     entry: {
-        bundle: path.resolve(__dirname, '../lib', 'App.js'),
-        main: path.resolve(__dirname, 'src/stylesheets', 'main.scss')
+        bundle: path.resolve(__dirname, '../src/lib', 'sokhan.js'),
+        main: path.resolve(__dirname, '../src/stylesheets', 'main.scss')
     },
 
     output: {
@@ -27,10 +27,7 @@ export default {
     module: {
         rules: [{
             test: /\.js$/,
-            use: [
-                'react-hot-loader',
-                'babel-loader'
-            ]
+            loader: 'babel-loader'
         }, {
             test: /\.scss$/,
             loader: ExtractTextPlugin.extract({
@@ -51,8 +48,17 @@ export default {
     },
 
     plugins: [
+        new CopyWebpackPlugin([{
+            from: '../src/_locales/**/*',
+            to: 'images',
+            flatten: false
+        }, {
+            from: '../src/icons/**/*',
+            to: 'icons',
+            flatten: false
+        }]),
         new ExtractTextPlugin({
-            filename: `[name].${process.env.NODE_ENV === 'production' ? '[chunkhash].' : ''}css`
+            filename: '[name].css'
         }),
         new webpack.LoaderOptionsPlugin({
             minimize: true
@@ -62,12 +68,6 @@ export default {
             compress: {
                 warnings: false
             }
-        }),
-        new HtmlWebpackPlugin({
-            filename: '../src/views/partials/embeds.hbs',
-            template: 'src/views/partials/embeds.template.html',
-            inject: false,
-            genFileText: '<!-- This is a generated file -->'
         })
     ],
 

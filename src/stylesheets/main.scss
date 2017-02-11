@@ -1,0 +1,46 @@
+body {
+    width: 300px;
+    background-color: #F3F5F6;
+    font-size: 12px;
+    padding: 10px 20px;
+    font-family: Verdana, Arial, sans-serif;
+}
+img {
+    height: 36px;
+}
+h1 {
+    font-size: 1.1rem;
+    position: absolute;
+    top: 17px;
+    left: 54px;
+    color: #3F3939;
+    font-weight: normal;
+}
+h2 {
+    font-size: 0.9rem;
+}
+button {
+    width: 40%;
+    height: 35px;
+    display: inline-block;
+    border: 0;
+    padding: 0;
+    position:absolute;
+    color:#FFF;
+}
+.buttonContainer {
+    position: relative;
+    height: 35px;
+    margin: 20px 0;
+}
+.alignLeft {
+    left: 0;
+    background-color:#F7B53C;
+}
+.alignRight {
+    right: 0;
+    background-color: #FF4C4C;
+}
+.defaultMargin {
+    margin: 10px 0;
+}
