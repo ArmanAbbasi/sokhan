@@ -14,6 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
+/* globals chrome, speechSynthesis */
+
 import config from './config';
 
 class Sokhan {
@@ -258,4 +260,4 @@ class Sokhan {
     }
 }
 
-new Sokhan(window.speechSynthesis);
+new Sokhan(speechSynthesis);
