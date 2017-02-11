@@ -16,6 +16,10 @@
  */
 /* globals Audio, chrome */
 
+/**
+ * @name Background
+ * @description This class runs in the background across tabs, doing all the relevant background tasks
+ * */
 class Background {
     constructor() {
         this.isSokhanActive = true;
@@ -30,22 +34,36 @@ class Background {
         this.bindEvents();
     }
 
-    getCurrentIconState() {
+    /**
+     * @name getCurrentIconStatePath
+     * @returns {Object} Contains path to relevant icon to be displayed
+     * @description Checks icon to be displayed based on active state
+     * */
+    getCurrentIconStatePath() {
         return {
             path: `../images/sokhan-48${this.isSokhanActive ? '' : '-off'}.png`
         };
     }
 
+    /**
+     * @name playAudioByType
+     * @param {String} type The type of audio to be played
+     * @description Plays audio based on given type
+     * */
     playAudioByType(type) {
         this.audio[type].play();
     }
 
+    /**
+     * @name bindEvents
+     * @description Binds actions to triggered events
+     * */
     bindEvents() {
         chrome.storage.onChanged.addListener((changes) => {
             if (changes.active) {
                 this.isSokhanActive = changes.active.newValue;
                 this.playAudioByType('ding');
-                chrome.browserAction.setIcon(this.getCurrentIconState());
+                chrome.browserAction.setIcon(this.getCurrentIconStatePath());
             }
         });
 
@@ -63,7 +81,7 @@ class Background {
 
         chrome.storage.sync.get('active', resp => {
             this.isSokhanActive = typeof resp.active === 'boolean' ? resp.active : true;
-            chrome.browserAction.setIcon(this.getCurrentIconState());
+            chrome.browserAction.setIcon(this.getCurrentIconStatePath());
         });
 
         chrome.tabs.onCreated.addListener(() => this.playAudioByType('open'));
