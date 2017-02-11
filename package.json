@@ -3,20 +3,22 @@
     "author": "Arman Abbasi",
     "license": "GPL-3.0",
     "description": "Sokhan, smart screen reader for the visually impaired or blind, in more than 26 languages.",
-    "version": "2.0",
+    "version": "2.1",
+
+    "scripts": {
+        "build": "rimraf build/* && webpack --config config/webpack.config.babel.js --progress --hide-modules",
+        "watch": "rimraf build/* && webpack --watch --progress --colors"
+    },
+
     "repository": {
         "type": "git",
-        "url": ""
+        "url": "git@github.com:ArmanAbbasi/sokhan.git"
     },
+
     "bugs": {
-        "url": ""
+        "url": "https://github.com/ArmanAbbasi/sokhan/issues"
     },
-    "scripts": {
-        "dev": "{ node src/server & npm run watch & }",
-        "build": "rimraf dist/* && cross-env NODE_ENV=production webpack --config webpack.config.babel.js --progress --hide-modules",
-        "watch": "rimraf dist/* && webpack --watch --progress --colors",
-        "serve": "cross-env NODE_ENV=production node src/server"
-    },
+
     "devDependencies": {
         "babel-core": "^6.22.1",
         "babel-eslint": "^7.1.1",
