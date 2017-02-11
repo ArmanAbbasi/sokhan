@@ -7,9 +7,9 @@
     "version": "2.1.0",
 
     "icons": {
-        "48": "icons/sokhan-48.png",
-        "96": "icons/sokhan-96.png",
-        "128": "icons/sokhan-128.png"
+        "48": "images/sokhan-48.png",
+        "96": "images/sokhan-96.png",
+        "128": "images/sokhan-128.png"
     },
 
     "content_scripts": [{
@@ -18,7 +18,7 @@
     }],
 
     "browser_action": {
-        "default_icon": "icons/sokhan-96.png",
+        "default_icon": "images/sokhan-96.png",
         "default_title": "Sokhan",
         "default_popup": "menu/menu.html"
     },
@@ -46,7 +46,7 @@
     },
 
     "background": {
-        "scripts": ["lib/background.js"]
+        "scripts": ["background.js"]
     },
 
     "minimum_chrome_version": "45.0"
