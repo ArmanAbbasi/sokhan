@@ -17,14 +17,19 @@
 /* globals chrome, speechSynthesis */
 
 import config from './config';
+import helper from './helper';
 
 class Sokhan {
     constructor() {
         this.isSokhanActive = true;
         this.foundTextTimeout = null;
 
+        this.bindEvents();
+    }
+
+    bindEvents() {
         chrome.storage.sync.get('active', resp => {
-            this.isSokhanActive = (typeof resp.active === 'boolean' ? resp.active : true);
+            this.isSokhanActive = typeof resp.active === 'boolean' ? resp.active : true;
         });
 
         document.addEventListener('readystatechange', () => {
@@ -34,50 +39,23 @@ class Sokhan {
         });
     }
 
-    findParentLink(target) {
-        let i = 0;
-        let tmp = target;
-
-        while (target && target.tagName !== 'A' && i < 5) {
-            tmp = tmp.parentElement;
-            if (tmp.tagName === 'A') {
-                break;
-            }
-            i += 1;
-        }
-
-        return tmp.tagName === 'A' ? tmp : target;
-    }
-
-    getAttribute(el, refAttr) {
-        while(el && el.parentElement) {
-            if (el.getAttribute(refAttr)) {
-                return el.getAttribute(refAttr);
-            } else {
-                el = el.parentElement;
-            }
-        }
-        return false;
-    }
-
     onMouseOver(e) {
-        let self = this;
         if (this.foundTextTimeout) {
             clearTimeout(this.foundTextTimeout);
         }
 
-        this.foundTextTimeout = setTimeout(function() {
-            self.analyseElementAndFindText(e.target);
+        this.foundTextTimeout = setTimeout(() => {
+            this.analyseElementAndFindText(e.target);
         }, 250);
     }
 
     handleSpecialElements(el, isOnLoad) {
-        let text = '',
-            numItems;
+        let text = '';
+        let numItems;
 
         if (el.tagName === 'SPAN' || el.tagName === 'DIV' || el.tagName === 'IMG') {
             if (el.tagName !== 'IMG' || (el.tagName === 'IMG' && !el.alt)) {
-                el = this.findParentLink(el);
+                el = helper.findParentLink(el);
                 text = el.textContent || el.title || el.getAttribute('aria-label');
             } else if (el.tagName === 'IMG' && el.alt) {
                 text = el.alt || el.title || el.getAttribute('aria-label');
@@ -107,10 +85,9 @@ class Sokhan {
     }
 
     handleTextFields(el) {
-        let text = (this.getAttribute(el, 'aria-label') || el.textContent || el.alt || '').trim(),
-            largeSpaces = text && text.match(/\s{2,}/g),
-            largeSpacesSum = largeSpaces && largeSpaces.length;
-
+        const text = (helper.getAttribute(el, 'aria-label') || el.textContent || el.alt || '').trim();
+        const largeSpaces = text && text.match(/\s{2,}/g);
+        const largeSpacesSum = largeSpaces && largeSpaces.length;
 
         if (text && text.length > 2 && largeSpacesSum < 4 && text.indexOf('<div>') === -1 && text.indexOf('<span>') === -1) {
             this.stopSpeech();
@@ -119,24 +96,24 @@ class Sokhan {
     }
 
     analyseElementAndFindText(target, isOnLoad) {
-        if (this.getAttribute(target, 'aria-hidden')) { return; }
+        if (helper.getAttribute(target, 'aria-hidden')) { return; }
         this[config.elementTextMap[target.tagName] ? 'handleSpecialElements' : 'handleTextFields'].call(this, target, isOnLoad);
     }
 
     getTextForTypeOfElement(el) {
         let title = config.elementTextMap[el.tagName];
-        let self = this;
-        return (typeof title === 'string' ? title : (function () {
+
+        return (typeof title === 'string' ? title : (() => {
             let labelEl = document.querySelector('[for="' + el.id + '"]');
             let text = (labelEl && labelEl.textContent) || '';
             let checked = (el.type === 'checkbox' || el.type === 'radio') ? (el.checked ? 'checked': 'unchecked') : '';
             let relatedText = text ? (' for ' + text) : '';
 
-            return self.config.elementTextMap[el.tagName][el.type] + checked + relatedText;
-        }()));
+            return this.config.elementTextMap[el.tagName][el.type] + checked + relatedText;
+        })());
     }
 
-    stopSpeech() {
+    static stopSpeech() {
         speechSynthesis.cancel();
     }
 
@@ -146,9 +123,7 @@ class Sokhan {
         }
 
         //Bug in Chrome makes browser crash.
-        text = text.replace(/\.\w+/, function (match) {
-            return match.replace('.', ' . ');
-        });
+        text = text.replace(/\.\w+/, (match) => match.replace('.', ' . '));
 
         if (!config.utter || !config.utter.voice || !speechSynthesis) {
             config.setLanguageDefaults();
@@ -197,31 +172,30 @@ class Sokhan {
 
     onSelectMenuChanged(e) {
         this.stopSpeech();
-        let el = e.currentTarget,
-            str = 'Selection menu changed to ' + (el.selectedOptions[0].textContent || el.getAttribute('aria-label') || 'not defined');
+        let el = e.currentTarget;
+        let str = 'Selection menu changed to ' + (el.selectedOptions[0].textContent || el.getAttribute('aria-label') || 'not defined');
 
         this.sokhan(str);
     }
 
     init() {
-        let self = this;
         this.sokhan(document.title || document.querySelector('h1').textContent || 'unknown website title ');
-        setTimeout(function () {
-            self.analyseElementAndFindText(document.activeElement, true);
+        setTimeout(() => {
+            this.analyseElementAndFindText(document.activeElement, true);
         }, 500);
 
-        chrome.storage.onChanged.addListener(function(changes) {
+        chrome.storage.onChanged.addListener((changes) => {
             if (changes.active) {
-                self.isActive = changes.active.newValue;
+                this.isActive = changes.active.newValue;
             } else if (changes.autoDetect) {
-                self.config.autoDetect = changes.autoDetect.newValue;
+                this.config.autoDetect = changes.autoDetect.newValue;
             } else if (changes.gender) {
-                self.config.defaultGender = changes.gender.newValue;
-                self.config.altGender = changes.gender.oldValue;
+                this.config.defaultGender = changes.gender.newValue;
+                this.config.altGender = changes.gender.oldValue;
             } else if (changes.rate) {
-                self.config.rate = changes.rate.newValue;
+                this.config.rate = changes.rate.newValue;
             }
-            self.config.setLanguageDefaults();
+            this.config.setLanguageDefaults();
         });
         let inputFieldEls = document.getElementsByTagName('input'),
             linkEls = document.getElementsByTagName('a'),
