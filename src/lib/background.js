@@ -16,9 +16,9 @@
  */
 /* globals Audio, chrome */
 
-class State {
+class Background {
     constructor() {
-        this.isActive = true;
+        this.isSokhanActive = true;
         this.audio = {
             open: new Audio('sound/open.mp3'),
             ding: new Audio('sound/ding.mp3'),
@@ -26,57 +26,51 @@ class State {
             swoosh: new Audio('sound/swoosh.mp3'),
             volume: new Audio('sound/volume.mp3')
         };
-        this.setIcon = chrome.browserAction.setIcon;
-        this.storage = chrome.storage.sync;
-        this.rate = 1.0;
+        this.speechPlayBackSpeed = 1.0;
         this.bindEvents();
     }
 
-    getIconState(state) {
+    getCurrentIconState() {
         return {
-            path: state ? {
-                48: '../images/sokhan-48.png'
-            } : {
-                48: '../images/sokhan-48-off.png'
-            }
+            path: `../images/sokhan-48${this.isSokhanActive ? '' : '-off'}.png`
         };
     }
 
-    playAudio(type) {
+    playAudioByType(type) {
         this.audio[type].play();
     }
 
     bindEvents() {
         chrome.storage.onChanged.addListener((changes) => {
             if (changes.active) {
-                this.isActive = changes.active.newValue;
-                this.playAudio('ding');
-                this.setIcon(this.getIconState(this.isActive));
+                this.isSokhanActive = changes.active.newValue;
+                this.playAudioByType('ding');
+                chrome.browserAction.setIcon(this.getCurrentIconState());
             }
         });
 
         chrome.commands.onCommand.addListener((command) => {
             if (command === 'Ctrl+Right') {
-                this.rate += 0.1;
-                this.storage.set({'rate': this.rate});
-                this.playAudio('volume');
+                this.speechPlayBackSpeed += 0.1;
+                chrome.storage.sync.set({'rate': this.speechPlayBackSpeed});
+                this.playAudioByType('volume');
             } else if (command === 'Ctrl+Left') {
-                this.rate -= 0.1;
-                this.storage.set({'rate': this.rate});
-                this.playAudio('volume');
+                this.speechPlayBackSpeed -= 0.1;
+                chrome.storage.sync.set({'rate': this.speechPlayBackSpeed});
+                this.playAudioByType('volume');
             }
         });
 
         chrome.storage.sync.get('active', resp => {
-            this.isActive = (typeof resp.active === 'boolean' ? resp.active : true);
-            this.setIcon(this.getIconState(this.isActive));
+            this.isSokhanActive = typeof resp.active === 'boolean' ? resp.active : true;
+            chrome.browserAction.setIcon(this.getCurrentIconState());
         });
 
-        chrome.tabs.onCreated.addListener(() => this.playAudio('open'));
-        chrome.tabs.onRemoved.addListener(() => this.playAudio('trash'));
-        chrome.tabs.onActivated.addListener(() => this.playAudio('swoosh'));
-        chrome.management.onEnabled.addListener(() => this.playAudio('ding'));
+        chrome.tabs.onCreated.addListener(() => this.playAudioByType('open'));
+        chrome.tabs.onRemoved.addListener(() => this.playAudioByType('trash'));
+        chrome.tabs.onActivated.addListener(() => this.playAudioByType('swoosh'));
+        chrome.management.onEnabled.addListener(() => this.playAudioByType('ding'));
     }
 }
 
-new State();
+new Background();
