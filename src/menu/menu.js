@@ -18,6 +18,10 @@
 
 import chromeApiLayer from '../browser/chromeApiLayer';
 
+/**
+ * @name Menu
+ * @description Handles the browser menu actions
+ * */
 class Menu {
     constructor () {
         this.default = {'voiceName': 'Daniel'};
@@ -33,6 +37,10 @@ class Menu {
         this.init();
     }
 
+    /**
+     * @name setDefaults
+     * @description Get defaults from chrome store and set them internally
+     * */
     setDefaults() {
         chromeApiLayer.getStorage('gender', ({gender}) => {
             if (gender) {
@@ -55,6 +63,11 @@ class Menu {
         });
     }
 
+    /**
+     * @name onStateChange
+     * @params {Object} Event object
+     * @description On user change action, read text
+     * */
     onStateChange({currentTarget}) {
         const type = currentTarget.getAttribute('name');
         let checked = currentTarget.checked;
@@ -72,6 +85,11 @@ class Menu {
         chromeApiLayer.setStorage({[type]: checked});
     }
 
+    /**
+     * @name onAction
+     * @params {Object} Event object
+     * @description On user click or hover action, read text
+     * */
     onAction ({currentTarget}) {
         if (!this.isSokhanActive) { return; }
         const label = currentTarget.getAttribute('aria-label');
@@ -97,6 +115,10 @@ class Menu {
         };
     }
 
+    /**
+     * @name init
+     * @description Init settings and bind events
+     * */
     init() {
         this.setDefaults();
 
