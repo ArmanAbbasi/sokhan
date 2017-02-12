@@ -3,11 +3,11 @@
     <head>
         <link rel="stylesheet" href="../main.css"/>
     </head>
-    <body>
+    <body class="menu">
         <div tabindex="-1">
-            <img src="../images/sokhan-64.png" alt="Sokhan Logo" tabindex="-1"/><h1 tabindex="-1" aria-label="Heading: Sokhan">okhan</h1>
-            <p id="introduction" aria-label="=" tabindex="1">Change Sokhan screen reader settings. Changes require website refresh.</p>
-            <h2 aria-label="Heading: Voice Gender" tabindex="2">Voice</h2>
+            <img class="menu__logo" src="../images/sokhan-64.png" alt="Sokhan Logo" tabindex="-1"/><h1 class="menu__title" tabindex="-1" aria-label="Heading: Sokhan">okhan</h1>
+            <p id="introduction" aria-label="=" tabindex="1">Change screen reader settings (requires website refresh).</p>
+            <h2 class="menu__sub-title" aria-label="Heading: Voice Gender" tabindex="2">Voice</h2>
             <span id="selectMale" aria-label="Selection: Choose male voice, if available" tabindex="3">
                 <input tabindex="-1" id="male" type="radio" name="gender" value="male" checked/>
                 <label for="male">Male</label>
@@ -16,9 +16,9 @@
                 <input tabindex="-1" id="female" type="radio" name="gender" value="female"/>
                 <label for="female">Female</label>
             </span>
-            <div class="defaultMargin">
+            <div class="menu__separator">
                 <label tabindex="5" aria-label="Fallback Language, when the language cannot be detected on a website, it will fallback to the selected language" for="languageSelection">Fallback Language</label>
-                <select tabindex="6" aria-label="Selection: Fallback Language" name="languageSelection" id="languageSelection">
+                <select class="menu__selection" tabindex="6" aria-label="Selection: Fallback Language" name="languageSelection" id="languageSelection">
                     <option value="en">English</option>
                     <option value="nl">Dutch</option>
                     <option value="id">Indonesian</option>
@@ -47,7 +47,7 @@
                     <option value="ru">Russian</option>
                 </select>
             </div>
-            <div class="buttonContainer"><button id="pause" class="alignLeft" name="active" aria-label="Button: Pause Sokhan until un-paused. This feature can also be toggled with left control key on your keyboard." tabindex="7">Pause</button><button id="disable" class="alignRight" aria-label="Button, Warning, disables Sokhan. If selected, Sokhan can only be re-enabled via browser extension settings." tabindex="8">Disable</button></div>
+            <div class="button-holder"><button class="button-holder__button button-holder--left" id="pause" name="active" aria-label="Button: Pause Sokhan until un-paused. This feature can also be toggled with left control key on your keyboard." tabindex="7">Pause</button><button class="button-holder__button button-holder--right" id="disable" aria-label="Button, Warning, disables Sokhan. If selected, Sokhan can only be re-enabled via browser extension settings." tabindex="8">Disable</button></div>
             <script src="../menu.js" async="async"></script>
         </div>
     </body>

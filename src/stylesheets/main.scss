@@ -1,53 +1,70 @@
-body {
-    width: 300px;
-    background-color: #F3F5F6;
-    font-size: 12px;
-    padding: 10px 20px;
-    font-family: Verdana, Arial, sans-serif;
+@import './variables';
+
+.menu {
+    font-family: $defaultFontFamily;
+    background-color: $defaultBackgroundColour;
+    color: $defaultFondColour;
+    font-size: $defaultFontSize;
+    line-height: $defaultLineHeight;
+    width: $defaultMenuWidth;
+    padding: 18px 28px;
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-smoothing: antialiased;
+
+    .menu__logo {
+        height: 36px;
+    }
+
+    .menu__title {
+        font-size: 1.1rem;
+        position: absolute;
+        top: 17px;
+        left: 54px;
+        font-weight: normal;
+    }
+
+    .menu__sub-title {
+        font-size: 0.9rem;
+    }
+
+    .menu__selection {
+        height: 30px;
+        width: 150px;
+        border-radius: 0;
+        margin-left: 13px;
+    }
+
+    .menu__separator {
+        margin-top: .8rem;
+        margin-bottom: .8rem;
+    }
 }
-img {
-    height: 36px;
-}
-h1 {
-    font-size: 1.1rem;
-    position: absolute;
-    top: 17px;
-    left: 54px;
-    color: #3F3939;
-    font-weight: normal;
-}
-h2 {
-    font-size: 0.9rem;
-}
-button {
-    width: 40%;
-    height: 35px;
-    display: inline-block;
-    border: 0;
-    padding: 0;
-    position:absolute;
-    color:#FFF;
-}
-.buttonContainer {
+
+.button-holder {
     position: relative;
     height: 35px;
     margin: 20px 0;
-}
-.alignLeft {
-    left: 0;
-    background-color:#F7B53C;
-}
-.alignRight {
-    right: 0;
-    background-color: #FF4C4C;
-}
-.defaultMargin {
-    margin: 10px 0;
-}
 
-select {
-    height: 30px;
-    width: 150px;
-    border-radius: 0;
-    margin-left: 34px;
+    .button-holder__button {
+        color: $buttonFontColour;
+        width: 40%;
+        height: 35px;
+        display: inline-block;
+        border: 0;
+        padding: 0;
+        position: absolute;
+        font-size: 100%;
+    }
+
+    .button-holder--left {
+        background-color: $buttonYellowColour;
+        left: 0;
+    }
+
+    .button-holder--right {
+        background-color: $buttonRedColour;
+        right: 0;
+    }
 }
