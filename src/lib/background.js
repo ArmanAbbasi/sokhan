@@ -29,17 +29,6 @@ class Background {
     }
 
     /**
-     * @name getCurrentIconStatePath
-     * @returns {Object} Contains path to relevant icon to be displayed
-     * @description Checks icon to be displayed based on active state
-     * */
-    getCurrentIconStatePath() {
-        return {
-            path: `../images/sokhan-48${store.getSokhanActive() ? '' : '-off'}.png`
-        };
-    }
-
-    /**
      * @name bindEvents
      * @description Binds actions to triggered events
      * */
@@ -48,7 +37,7 @@ class Background {
             if (active) {
                 store.setSokhanActive(active.newValue);
                 audio.play('ding');
-                chromeApiLayer.setIcon(this.getCurrentIconStatePath());
+                chromeApiLayer.setIcon(store.getSokhanActive());
             }
         });
 
@@ -66,7 +55,7 @@ class Background {
 
         chromeApiLayer.getStorage('active', ({active}) => {
             store.setSokhanActive(active);
-            chromeApiLayer.setIcon(this.getCurrentIconStatePath());
+            chromeApiLayer.setIcon(store.getSokhanActive());
         });
 
         chromeApiLayer.onNewTab(() => audio.play('open'));
