@@ -16,6 +16,8 @@
  */
 /* globals chrome, Audio */
 
+import chromeApiLayer from '../browser/chromeApiLayer';
+
 /**
  * @name Background
  * @description This class runs in the background across tabs, doing all the relevant background tasks
@@ -59,35 +61,35 @@ class Background {
      * @description Binds actions to triggered events
      * */
     bindEvents() {
-        chrome.storage.onChanged.addListener((changes) => {
-            if (changes.active) {
-                this.isSokhanActive = changes.active.newValue;
+        chromeApiLayer.changedStorage(({active}) => {
+            if (active) {
+                this.isSokhanActive = active.newValue;
                 this.playAudioByType('ding');
-                chrome.browserAction.setIcon(this.getCurrentIconStatePath());
+                chromeApiLayer.setIcon(this.getCurrentIconStatePath());
             }
         });
 
-        chrome.commands.onCommand.addListener((command) => {
+        chromeApiLayer.onCommand((command) => {
             if (command === 'Ctrl+Right') {
                 this.speechPlayBackSpeed += 0.1;
-                chrome.storage.sync.set({'rate': this.speechPlayBackSpeed});
+                chromeApiLayer.setStorage({'rate': this.speechPlayBackSpeed});
                 this.playAudioByType('volume');
             } else if (command === 'Ctrl+Left') {
                 this.speechPlayBackSpeed -= 0.1;
-                chrome.storage.sync.set({'rate': this.speechPlayBackSpeed});
+                chromeApiLayer.setStorage({'rate': this.speechPlayBackSpeed});
                 this.playAudioByType('volume');
             }
         });
 
-        chrome.storage.sync.get('active', resp => {
-            this.isSokhanActive = typeof resp.active === 'boolean' ? resp.active : true;
-            chrome.browserAction.setIcon(this.getCurrentIconStatePath());
+        chromeApiLayer.getStorage('active', ({active}) => {
+            this.isSokhanActive = typeof active === 'boolean' ? active : true;
+            chromeApiLayer.setIcon(this.getCurrentIconStatePath());
         });
 
-        chrome.tabs.onCreated.addListener(() => this.playAudioByType('open'));
-        chrome.tabs.onRemoved.addListener(() => this.playAudioByType('trash'));
-        chrome.tabs.onActivated.addListener(() => this.playAudioByType('swoosh'));
-        chrome.management.onEnabled.addListener(() => this.playAudioByType('ding'));
+        chromeApiLayer.onNewTab(() => this.playAudioByType('open'));
+        chromeApiLayer.onRemovedTab(() => this.playAudioByType('trash'));
+        chromeApiLayer.onActivatedTab(() => this.playAudioByType('swoosh'));
+        chromeApiLayer.onEnabled(() => this.playAudioByType('ding'));
     }
 }
 
