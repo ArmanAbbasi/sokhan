@@ -17,6 +17,7 @@
 /* globals chrome, Audio */
 
 import chromeApiLayer from '../browser/chromeApiLayer';
+import store from '../store';
 
 /**
  * @name Background
@@ -24,7 +25,6 @@ import chromeApiLayer from '../browser/chromeApiLayer';
  * */
 class Background {
     constructor() {
-        this.isSokhanActive = true;
         this.audio = {
             open: new Audio('sound/open.mp3'),
             ding: new Audio('sound/ding.mp3'),
@@ -32,7 +32,6 @@ class Background {
             swoosh: new Audio('sound/swoosh.mp3'),
             volume: new Audio('sound/volume.mp3')
         };
-        this.speechPlayBackSpeed = 1.0;
         this.bindEvents();
     }
 
@@ -43,7 +42,7 @@ class Background {
      * */
     getCurrentIconStatePath() {
         return {
-            path: `../images/sokhan-48${this.isSokhanActive ? '' : '-off'}.png`
+            path: `../images/sokhan-48${store.getSokhanActive() ? '' : '-off'}.png`
         };
     }
 
@@ -63,7 +62,7 @@ class Background {
     bindEvents() {
         chromeApiLayer.changedStorage(({active}) => {
             if (active) {
-                this.isSokhanActive = active.newValue;
+                store.setSokhanActive(active.newValue);
                 this.playAudioByType('ding');
                 chromeApiLayer.setIcon(this.getCurrentIconStatePath());
             }
@@ -71,18 +70,18 @@ class Background {
 
         chromeApiLayer.onCommand((command) => {
             if (command === 'Ctrl+Right') {
-                this.speechPlayBackSpeed += 0.1;
-                chromeApiLayer.setStorage({'rate': this.speechPlayBackSpeed});
+                store.incrementSpeechRate();
+                chromeApiLayer.setStorage({'rate': store.getSpeechRate()});
                 this.playAudioByType('volume');
             } else if (command === 'Ctrl+Left') {
-                this.speechPlayBackSpeed -= 0.1;
-                chromeApiLayer.setStorage({'rate': this.speechPlayBackSpeed});
+                store.decrementSpeechRate();
+                chromeApiLayer.setStorage({'rate': store.getSpeechRate()});
                 this.playAudioByType('volume');
             }
         });
 
         chromeApiLayer.getStorage('active', ({active}) => {
-            this.isSokhanActive = typeof active === 'boolean' ? active : true;
+            store.setSokhanActive(active);
             chromeApiLayer.setIcon(this.getCurrentIconStatePath());
         });
 
