@@ -26,13 +26,8 @@ class Sokhan {
         this.bindEvents();
     }
 
-    getTextFromElement(el) {
-        return el.textContent;
-    }
-
     elementFocused(el) {
-        console.log(this);
-        console.log(this.getTextFromElement(el));
+        console.log(helper.getTextFromEl(el));
     }
 
     bindEvents() {

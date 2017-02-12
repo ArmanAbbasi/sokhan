@@ -47,10 +47,25 @@ const getTextFromCommonAttributes = (el) => {
 };
 
 const getTextFromSelectionEl = (el) => {
+    const defaultText = 'Selection menu: ';
     const ariaText = getTextFromAriaAttributes(el);
     const commonText = getTextFromCommonAttributes(el);
+    const currentSelection = `${el.children.length} choices, active selection: ${el.selectedOptions[el.selectedIndex].textContent || 'None'}`;
 
+    const choices = `Choices are: ${(() => {
+        const children = el.children;
+        let str = '';
 
+        for (let i in children) {
+            if (children.hasOwnProperty(i) && children[i].textContent) {
+                str += children[i].textContent + ', ';
+            }
+        }
+
+        return str;
+    })()}`;
+
+    return `${defaultText} ${ariaText || commonText} ${currentSelection} ${choices}`;
 };
 
 const elementActions = {
@@ -79,6 +94,9 @@ export default {
                 }
             }, 200)
         };
+    },
+    getTextFromEl(el) {
+        return (elementActions[el.tagName] && elementActions[el.tagName](el)) || '';
     },
     findParentLink: (target) => {
         let i = 0;
