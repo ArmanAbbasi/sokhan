@@ -99,8 +99,6 @@ class Menu {
             text += `, ${currentTarget.children.length} options to choose from, current selection: ${currentTarget.selectedOptions[0].textContent}, the options are: ${currentTarget.textContent.trim().replace(/\s+/g, ',')}.`;
         }
 
-        console.log(chromeApiLayer.speak);
-
         chromeApiLayer.speak(text, this.default);
     }
 
