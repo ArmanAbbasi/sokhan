@@ -18,6 +18,7 @@
 
 import chromeApiLayer from '../browser/chromeApiLayer';
 import store from '../store';
+import audio from '../audio';
 
 /**
  * @name Background
@@ -25,13 +26,6 @@ import store from '../store';
  * */
 class Background {
     constructor() {
-        this.audio = {
-            open: new Audio('sound/open.mp3'),
-            ding: new Audio('sound/ding.mp3'),
-            trash: new Audio('sound/trash.mp3'),
-            swoosh: new Audio('sound/swoosh.mp3'),
-            volume: new Audio('sound/volume.mp3')
-        };
         this.bindEvents();
     }
 
@@ -47,15 +41,6 @@ class Background {
     }
 
     /**
-     * @name playAudioByType
-     * @param {String} type The type of audio to be played
-     * @description Plays audio based on given type
-     * */
-    playAudioByType(type) {
-        this.audio[type].play();
-    }
-
-    /**
      * @name bindEvents
      * @description Binds actions to triggered events
      * */
@@ -63,7 +48,7 @@ class Background {
         chromeApiLayer.changedStorage(({active}) => {
             if (active) {
                 store.setSokhanActive(active.newValue);
-                this.playAudioByType('ding');
+                audio.play('ding');
                 chromeApiLayer.setIcon(this.getCurrentIconStatePath());
             }
         });
@@ -72,11 +57,11 @@ class Background {
             if (command === 'Ctrl+Right') {
                 store.incrementSpeechRate();
                 chromeApiLayer.setStorage({'rate': store.getSpeechRate()});
-                this.playAudioByType('volume');
+                audio.play('volume');
             } else if (command === 'Ctrl+Left') {
                 store.decrementSpeechRate();
                 chromeApiLayer.setStorage({'rate': store.getSpeechRate()});
-                this.playAudioByType('volume');
+                audio.play('volume');
             }
         });
 
@@ -85,10 +70,10 @@ class Background {
             chromeApiLayer.setIcon(this.getCurrentIconStatePath());
         });
 
-        chromeApiLayer.onNewTab(() => this.playAudioByType('open'));
-        chromeApiLayer.onRemovedTab(() => this.playAudioByType('trash'));
-        chromeApiLayer.onActivatedTab(() => this.playAudioByType('swoosh'));
-        chromeApiLayer.onEnabled(() => this.playAudioByType('ding'));
+        chromeApiLayer.onNewTab(() => audio.play('open'));
+        chromeApiLayer.onRemovedTab(() => audio.play('trash'));
+        chromeApiLayer.onActivatedTab(() => audio.play('swoosh'));
+        chromeApiLayer.onEnabled(() => audio.play('ding'));
     }
 }
 
