@@ -1,5 +1,8 @@
 3.0
 Refactored the code to ES6 and parsed for older browser versions
+Added option to set fallback language
+Fixed bugs
+Removed option to disable automatic language selection
 
 2.1
 Upgraded build process
