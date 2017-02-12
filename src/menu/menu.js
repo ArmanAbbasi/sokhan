@@ -26,12 +26,20 @@ class Menu {
     constructor () {
         this.default = {'voiceName': 'Daniel'};
         this.els = {
-            male: document.getElementById('male'),
-            female: document.getElementById('female'),
-            pause: document.getElementById('pause'),
-            disable: document.getElementById('disable'),
-            aria: document.querySelectorAll('[aria-label]'),
-            fallbackLanguage: document.getElementById('languageSelection')
+            change: {
+                male: document.getElementById('male'),
+                female: document.getElementById('female'),
+                fallbackLanguage: document.getElementById('languageSelection')
+            },
+
+            click: {
+                pause: document.getElementById('pause'),
+                disable: document.getElementById('disable')
+            },
+
+            focus: {
+                aria: document.querySelectorAll('[aria-label]')
+            }
         };
         this.isSokhanActive = true;
         this.init();
@@ -44,10 +52,10 @@ class Menu {
     setDefaults() {
         chromeApiLayer.getStorage('gender', ({gender}) => {
             if (gender) {
-                this.els.male.checked = true;
+                this.els.change.male.checked = true;
             } else {
                 this.default.voiceName = 'Samantha';
-                this.els.female.checked = true;
+                this.els.change.female.checked = true;
             }
         });
 
@@ -114,22 +122,36 @@ class Menu {
     }
 
     /**
+     * @name bindEvents
+     * @description Bind all relevant events
+     * */
+    bindEvents() {
+        this.els.click.pause.addEventListener('click', e => this.onStateChange(e));
+        this.els.click.disable.addEventListener('click', () => chromeApiLayer.setDisabled());
+
+        for(let key in this.els.click) {
+            this.els.click[key].addEventListener('blur', () => chromeApiLayer.stopSpeak());
+        }
+
+        for(let key in this.els.change) {
+            this.els.change[key].addEventListener('change', e => this.onStateChange(e));
+            this.els.change[key].addEventListener('blur', () => chromeApiLayer.stopSpeak());
+        }
+
+        for (let el of this.els.focus.aria) {
+            el.addEventListener('mouseover', e => this.onAction(e));
+            el.addEventListener('focus', e => this.onAction(e));
+            el.addEventListener('blur', () => chromeApiLayer.stopSpeak());
+        }
+    }
+
+    /**
      * @name init
-     * @description Init settings and bind events
+     * @description Init everything
      * */
     init() {
         this.setDefaults();
-
-        this.els.pause.addEventListener('click', e => this.onStateChange(e));
-        this.els.male.addEventListener('change', e => this.onStateChange(e));
-        this.els.female.addEventListener('change', e => this.onStateChange(e));
-        this.els.fallbackLanguage.addEventListener('change', e => this.onStateChange(e));
-        this.els.disable.addEventListener('click', () => chromeApiLayer.setDisabled());
-
-        for (let el of this.els.aria) {
-            el.addEventListener('mouseover', e => this.onAction(e));
-            el.addEventListener('focus', e => this.onAction(e));
-        }
+        this.bindEvents();
     }
 }
 

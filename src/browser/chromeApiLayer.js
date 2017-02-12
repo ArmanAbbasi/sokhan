@@ -7,5 +7,6 @@ export default {
     setDisabled: () => chrome.management.getSelf(extensionInfo => {
         chrome.management.setEnabled(extensionInfo.id, false);
     }),
-    speak: chrome.tts.speak
+    speak: chrome.tts.speak,
+    stopSpeak: chrome.tts.stop
 };
