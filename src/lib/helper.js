@@ -1,6 +1,6 @@
 let watched = {};
 
-const getTextFromAria = (el) => {
+const getTextFromAriaAttributes = (el) => {
     const ariaLabel = el.hasAttribute('aria-label');
     const ariaLabeledBy = el.hasAttribute('aria-labelledby');
     const ariaDescribedBy = el.hasAttribute('aria-describedby');
@@ -31,15 +31,25 @@ const getTextFromAria = (el) => {
 const getTextFromCommonAttributes = (el) => {
     const title = el.hasAttribute('title');
     const placeHolder = el.hasAttribute('placeholder');
-    const id = el.hasAttribute('id');
+    const id = (el.hasAttribute('id') && document.querySelector(`[for="${el.id}"]`)) || false;
+
+    let text = '';
+
+    if (title) {
+        text += `Tooltip: ${el.getAttribute('title')}`;
+    } else if (placeHolder) {
+        text += el.getAttribute('placeholder');
+    } else if (id) {
+        text += id.textContent;
+    }
+
+    return text;
 };
 
 const getTextFromSelectionEl = (el) => {
-    const ariaText = getTextFromAria(el);
+    const ariaText = getTextFromAriaAttributes(el);
+    const commonText = getTextFromCommonAttributes(el);
 
-    for (let key of attributes) {
-        console.log(key);
-    }
 
 };
 
