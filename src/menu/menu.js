@@ -26,7 +26,6 @@ class Menu {
             female: document.getElementById('female'),
             pause: document.getElementById('pause'),
             disable: document.getElementById('disable'),
-            autoDetect: document.getElementById('autoDetect'),
             aria: document.querySelectorAll('[aria-label]'),
             fallbackLanguage: document.getElementById('languageSelection')
         };
@@ -104,7 +103,6 @@ class Menu {
         this.els.pause.addEventListener('click', e => this.onStateChange(e));
         this.els.male.addEventListener('change', e => this.onStateChange(e));
         this.els.female.addEventListener('change', e => this.onStateChange(e));
-        this.els.autoDetect.addEventListener('change', e => this.onStateChange(e));
         this.els.fallbackLanguage.addEventListener('change', e => this.onStateChange(e));
         this.els.disable.addEventListener('click', () => chromeApiLayer.setDisabled());
 
