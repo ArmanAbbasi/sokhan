@@ -14,7 +14,7 @@
 
     "content_scripts": [{
         "matches": ["*://*/*"],
-        "js": ["main.js"]
+        "js": ["bundle.js"]
     }],
 
     "browser_action": {
