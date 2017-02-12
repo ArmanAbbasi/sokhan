@@ -16,6 +16,7 @@
  */
 
 import chromeApiLayer from '../browser/chromeApiLayer';
+import store from '../store';
 
 /**
  * @name Menu
@@ -40,7 +41,6 @@ class Menu {
                 aria: document.querySelectorAll('[aria-label]')
             }
         };
-        this.isSokhanActive = true;
         this.init();
     }
 
@@ -59,7 +59,7 @@ class Menu {
         });
 
         chromeApiLayer.getStorage('active', ({active}) => {
-            this.isSokhanActive = typeof active === 'boolean' ? active : true;
+            store.setSokhanActive(active);
             chromeApiLayer.setIcon(this.getCurrentIconStatePath());
         });
 
@@ -80,7 +80,7 @@ class Menu {
         let checked = currentTarget.checked;
 
         if (type === 'active') {
-            checked = this.isSokhanActive = !this.isSokhanActive;
+            checked = store.toggleSokhanActive();
             chromeApiLayer.setIcon(this.getCurrentIconStatePath());
         } else if (type === 'gender') {
             checked = currentTarget.value !== 'female';
@@ -98,7 +98,7 @@ class Menu {
      * @description On user click or hover action, read text
      * */
     onAction ({currentTarget}) {
-        if (!this.isSokhanActive) { return; }
+        if (!store.getSokhanActive()) { return; }
         const label = currentTarget.getAttribute('aria-label');
         let text = label === '=' ? currentTarget.textContent.trim() : label;
 
@@ -116,7 +116,7 @@ class Menu {
      * */
     getCurrentIconStatePath() {
         return {
-            path: `../images/sokhan-48${this.isSokhanActive ? '' : '-off'}.png`
+            path: `../images/sokhan-48${store.getSokhanActive() ? '' : '-off'}.png`
         };
     }
 

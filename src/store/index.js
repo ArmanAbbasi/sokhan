@@ -7,6 +7,10 @@ export default {
     setSokhanActive: (isSokhanActive = true) => {
         state.sokhanActive = isSokhanActive;
     },
+    toggleSokhanActive: () => {
+        state.sokhanActive = !state.sokhanActive;
+        return state.sokhanActive;
+    },
     getSokhanActive: () => state.sokhanActive,
     getSpeechRate: () => state.speechRate,
     incrementSpeechRate: () => {
