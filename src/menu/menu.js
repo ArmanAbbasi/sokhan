@@ -35,8 +35,8 @@ class Menu {
     }
 
     setDefaults() {
-        chromeApiLayer.getStorage('gender', resp => {
-            if (resp.gender) {
+        chromeApiLayer.getStorage('gender', ({gender}) => {
+            if (gender) {
                 this.els.male.checked = true;
             } else {
                 this.default.voiceName = 'Samantha';
@@ -44,53 +44,47 @@ class Menu {
             }
         });
 
-        chromeApiLayer.getStorage('active', resp => {
-            this.isSokhanActive = typeof resp.active === 'boolean' ? resp.active : true;
+        chromeApiLayer.getStorage('active', ({active}) => {
+            this.isSokhanActive = typeof active === 'boolean' ? active : true;
             chromeApiLayer.setIcon(this.getCurrentIconStatePath());
         });
 
-        chromeApiLayer.getStorage('autoDetect', resp => {
-            if (!resp.autoDetect) {
-                this.els.autoDetect.checked = resp.autoDetect;
-            }
-        });
-
-        chromeApiLayer.getStorage('languageSelection', resp => {
-            if (resp.languageSelection) {
-                document.querySelector('[value="' + resp.languageSelection + '"]').selected = true;
+        chromeApiLayer.getStorage('languageSelection', ({languageSelection}) => {
+            if (languageSelection) {
+                document.querySelector(`[value="${languageSelection}"]`).selected = true;
             }
         });
     }
 
-    onStateChange(e) {
-        let target = e.currentTarget,
-            type = target.getAttribute('name'),
-            checked = target.checked;
+    onStateChange({currentTarget}) {
+        const type = currentTarget.getAttribute('name');
+        let checked = currentTarget.checked;
 
         if (type === 'active') {
             checked = this.isSokhanActive = !this.isSokhanActive;
             chromeApiLayer.setIcon(this.getCurrentIconStatePath());
         } else if (type === 'gender') {
-            checked = target.value !== 'female';
+            checked = currentTarget.value !== 'female';
         } else if (type === 'languageSelection') {
-            checked = target.selectedOptions[0].value;
-            this.tts('Selected: ' + target.selectedOptions[0].textContent);
+            checked = currentTarget.selectedOptions[0].value;
+            chromeApiLayer.speak(`Selected: ${currentTarget.selectedOptions[0].textContent}`);
         }
 
         chromeApiLayer.setStorage({[type]: checked});
     }
 
-    onAction (e) {
+    onAction ({currentTarget}) {
         if (!this.isSokhanActive) { return; }
-        let target = e.currentTarget,
-            label = target.getAttribute('aria-label'),
-            text = label === '=' ? target.textContent.trim() : label;
+        const label = currentTarget.getAttribute('aria-label');
+        let text = label === '=' ? currentTarget.textContent.trim() : label;
 
-        if (target.tagName === 'SELECT') {
-            text += (', ' + target.children.length + 'options to choose from, current selection: ' + target.selectedOptions[0].textContent + ', the options are: ' + target.textContent.trim().replace(/\s+/g, ',') + '.');
+        if (currentTarget.tagName === 'SELECT') {
+            text += `, ${currentTarget.children.length} options to choose from, current selection: ${currentTarget.selectedOptions[0].textContent}, the options are: ${currentTarget.textContent.trim().replace(/\s+/g, ',')}.`;
         }
 
-        this.tts(text);
+        console.log(chromeApiLayer.speak);
+
+        chromeApiLayer.speak(text, this.default);
     }
 
     /**
@@ -106,21 +100,17 @@ class Menu {
 
     init() {
         this.setDefaults();
-        this.tts = text => chromeApiLayer.speak(text, this.default);
 
         this.els.pause.addEventListener('click', e => this.onStateChange(e));
         this.els.male.addEventListener('change', e => this.onStateChange(e));
         this.els.female.addEventListener('change', e => this.onStateChange(e));
         this.els.autoDetect.addEventListener('change', e => this.onStateChange(e));
         this.els.fallbackLanguage.addEventListener('change', e => this.onStateChange(e));
-
         this.els.disable.addEventListener('click', () => chromeApiLayer.setDisabled());
 
-        for (let i in this.els.aria) {
-            if (this.els.aria.hasOwnProperty(i)) {
-                this.els.aria[i].addEventListener('mouseover', e => this.onAction(e));
-                this.els.aria[i].addEventListener('focus', e => this.onAction(e));
-            }
+        for (let el of this.els.aria) {
+            el.addEventListener('mouseover', e => this.onAction(e));
+            el.addEventListener('focus', e => this.onAction(e));
         }
     }
 }

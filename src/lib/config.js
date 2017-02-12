@@ -31,6 +31,7 @@ const configControl = {
      * */
     getSiteLanguageByMetaTag() {
         const regMetaTag = /[a-z]+/.exec(document.documentElement && document.documentElement.getAttribute('lang'));
+        console.log(regMetaTag);
         return regMetaTag && regMetaTag[0];
     },
 
@@ -51,6 +52,7 @@ const configControl = {
                     if (num === 3) { break; }
                     chrome.i18n.detectLanguage(pText, (lang) => {
                         if (lang && lang.isReliable && lang.languages.length && lang.languages[0].percentage > 50) {
+                            console.log(lang.languages[0].language);
                             return lang.languages[0].language;
                         }
                     });
@@ -198,6 +200,7 @@ const configControl = {
     },
 
     bindEvents() {
+        console.log('bindEvents');
         chrome.storage.sync.get('languageSelection', resp => {
             config.defaultLang = resp.languageSelection || 'en';
         });
@@ -223,10 +226,12 @@ const configControl = {
     },
 
     setFallBackVoice() {
+        console.log('setFallBackVoice');
         config.fallbackVoice = config.availableVoices[config.defaultLang][config.defaultGender] || config.availableVoices[config.defaultLang][config.altGender];
     },
 
     setDefaultLanguage() {
+        console.log('setDefaultLanguage');
         config.setLanguageDefaults = () => {
             const foundVoice = (() => {
                 const langMeta = config.langMetaTag;
