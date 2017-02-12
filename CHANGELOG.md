@@ -1,8 +1,10 @@
 3.0
 Refactored the code to ES6 and parsed for older browser versions
 Added option to set fallback language
-Fixed bugs
+Many bug fixes
 Removed option to disable automatic language selection
+Removed reading text on mouse hover, it was a bad idea.
+Will always read out the items in the menu, even if paused.
 
 2.1
 Upgraded build process

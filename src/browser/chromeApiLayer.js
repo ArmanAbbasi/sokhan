@@ -4,7 +4,11 @@ export default {
     getStorage: chrome.storage.sync.get,
     setStorage: chrome.storage.sync.set,
     changedStorage: chrome.storage.onChanged.addListener,
-    setIcon: chrome.browserAction.setIcon,
+    setIcon: (isOn) => {
+        chrome.browserAction.setIcon({
+            path: `../images/sokhan-48${isOn ? '' : '-off'}.png`
+        });
+    },
     setDisabled: () => chrome.management.getSelf(extensionInfo => {
         chrome.management.setEnabled(extensionInfo.id, false);
     }),

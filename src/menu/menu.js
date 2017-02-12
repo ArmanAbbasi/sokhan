@@ -60,7 +60,7 @@ class Menu {
 
         chromeApiLayer.getStorage('active', ({active}) => {
             store.setSokhanActive(active);
-            chromeApiLayer.setIcon(this.getCurrentIconStatePath());
+            chromeApiLayer.setIcon(store.getSokhanActive());
         });
 
         chromeApiLayer.getStorage('languageSelection', ({languageSelection}) => {
@@ -81,7 +81,7 @@ class Menu {
 
         if (type === 'active') {
             checked = store.toggleSokhanActive();
-            chromeApiLayer.setIcon(this.getCurrentIconStatePath());
+            chromeApiLayer.setIcon(store.getSokhanActive());
         } else if (type === 'gender') {
             checked = currentTarget.value !== 'female';
         } else if (type === 'languageSelection') {
@@ -98,7 +98,6 @@ class Menu {
      * @description On user click or hover action, read text
      * */
     onAction ({currentTarget}) {
-        if (!store.getSokhanActive()) { return; }
         const label = currentTarget.getAttribute('aria-label');
         let text = label === '=' ? currentTarget.textContent.trim() : label;
 
@@ -107,17 +106,6 @@ class Menu {
         }
 
         chromeApiLayer.speak(text, this.default);
-    }
-
-    /**
-     * @name getCurrentIconStatePath
-     * @returns {Object} Contains path to relevant icon to be displayed
-     * @description Checks icon to be displayed based on active state
-     * */
-    getCurrentIconStatePath() {
-        return {
-            path: `../images/sokhan-48${store.getSokhanActive() ? '' : '-off'}.png`
-        };
     }
 
     /**
@@ -142,7 +130,6 @@ class Menu {
         }
 
         for (let el of this.els.focus.aria) {
-            el.addEventListener('mouseover', e => this.onAction(e));
             el.addEventListener('focus', e => this.onAction(e));
             el.addEventListener('blur', () => chromeApiLayer.stopSpeak());
         }
