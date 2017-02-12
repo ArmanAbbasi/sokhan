@@ -130,12 +130,16 @@ class Menu {
         this.els.click.disable.addEventListener('click', () => chromeApiLayer.setDisabled());
 
         for(let key in this.els.click) {
-            this.els.click[key].addEventListener('blur', () => chromeApiLayer.stopSpeak());
+            if (this.els.click.hasOwnProperty(key)) {
+                this.els.click[key].addEventListener('blur', () => chromeApiLayer.stopSpeak());
+            }
         }
 
         for(let key in this.els.change) {
-            this.els.change[key].addEventListener('change', e => this.onStateChange(e));
-            this.els.change[key].addEventListener('blur', () => chromeApiLayer.stopSpeak());
+            if (this.els.change.hasOwnProperty(key)) {
+                this.els.change[key].addEventListener('change', e => this.onStateChange(e));
+                this.els.change[key].addEventListener('blur', () => chromeApiLayer.stopSpeak());
+            }
         }
 
         for (let el of this.els.focus.aria) {
