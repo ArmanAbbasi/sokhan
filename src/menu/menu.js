@@ -15,12 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-import chromeApiLayer from '../browser/chromeApiLayer';
+import chromeApiLayer from '../api/chrome';
 import store from '../store';
 
 /**
  * @name Menu
- * @description Handles the browser menu actions
+ * @description Handles the api menu actions
  * */
 class Menu {
     constructor () {

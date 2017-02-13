@@ -1,4 +1,4 @@
-import chromeApiLayer from '../browser/chromeApiLayer';
+import chromeApiLayer from '../api/chrome';
 
 let watched = {};
 

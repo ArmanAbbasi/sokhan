@@ -18,7 +18,8 @@
 //import config from './config';
 import helper from './helper';
 // import store from '../store';
-import chromeApiLayer from '../browser/chromeApiLayer';
+import chromeApiLayer from '../api/chrome';
+import voice from '../api/voice';
 
 class Sokhan {
     constructor() {
@@ -28,21 +29,21 @@ class Sokhan {
 
     bindEvents() {
         helper.watch('activeElement', document.activeElement, (el) => {
-            if (chromeApiLayer.isSpeaking()) {
-                chromeApiLayer.stopSpeak();
+            if (voice.isSpeaking()) {
+                voice.stop();
             }
 
-            chromeApiLayer.speak(helper.getTextFromEl(el));
+            voice.speak(helper.getTextFromEl(el));
         });
     }
 
-    identifySite() {
-        helper.getSiteLanguage().then((val) => console.log(val));
-        chromeApiLayer.speak(helper.getSiteTitle());
+    identifySite(lang) {
+        console.log(lang);
+        voice.speak(helper.getSiteTitle());
     }
 
     init() {
-        this.identifySite();
+        helper.getSiteLanguage().then(this.identifySite);
     }
 
     // document.addEventListener('keydown', e => this.onKeyDown(e));
