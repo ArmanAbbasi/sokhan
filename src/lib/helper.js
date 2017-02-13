@@ -120,6 +120,12 @@ export default {
             }
         });
     },
+    getSiteTitle() {
+        let titleText = document.title;
+        let h1El = document.querySelector('h1');
+
+        return titleText || (h1El && h1El.textContent) || location.hostname;
+    },
     findParentLink: (target) => {
         let i = 0;
         let tmp = target;
