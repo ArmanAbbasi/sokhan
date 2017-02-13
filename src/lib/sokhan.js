@@ -38,6 +38,7 @@ class Sokhan {
 
     identifySite() {
         helper.getSiteLanguage().then((val) => console.log(val));
+        chromeApiLayer.speak(helper.getSiteTitle());
     }
 
     init() {
