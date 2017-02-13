@@ -50,9 +50,9 @@ const getTextFromSelectionEl = (el) => {
     const defaultText = 'Selection menu: ';
     const ariaText = getTextFromAriaAttributes(el);
     const commonText = getTextFromCommonAttributes(el);
-    const currentSelection = `${el.children.length} choices, active selection: ${el.selectedOptions[el.selectedIndex].textContent || 'None'}`;
+    const currentSelection = `. ${el.children.length} choices, active selection: ${el.selectedOptions[el.selectedIndex].textContent || 'None'}.`;
 
-    const choices = `Choices are: ${(() => {
+    const choices = `Menu choices are: ${(() => {
         const children = el.children;
         let str = '';
 
