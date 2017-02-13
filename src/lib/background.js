@@ -17,7 +17,7 @@
 
 import chromeApiLayer from '../api/chrome';
 import store from '../store';
-import audio from '../audio';
+import audio from '../api/audio';
 
 /**
  * @name Background
