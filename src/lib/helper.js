@@ -1,3 +1,5 @@
+import chromeApiLayer from '../browser/chromeApiLayer';
+
 let watched = {};
 
 const getTextFromAriaAttributes = (el) => {
@@ -97,6 +99,26 @@ export default {
     },
     getTextFromEl(el) {
         return (elementActions[el.tagName] && elementActions[el.tagName](el)) || '';
+    },
+    getSiteLanguage() {
+        return new Promise((resolve) => {
+            let langAttr = document.querySelector('html').getAttribute('lang');
+
+            if (langAttr) {
+                let match = /\w+/i.exec(langAttr);
+                resolve(match && match[0]);
+            } else {
+                let randomElements = document.getElementsByTagName('p') || document.getElementsByTagName('h1') || document.getElementsByTagName('h2');
+
+                for(let el of randomElements) {
+                    chromeApiLayer.detectLanguage(el.textContent, (lang) => {
+                        if (lang && lang.isReliable && lang.languages.length && lang.languages[0].percentage > 50) {
+                            resolve(lang.languages[0].language);
+                        }
+                    });
+                }
+            }
+        });
     },
     findParentLink: (target) => {
         let i = 0;

@@ -34,5 +34,6 @@ export default {
     onNewTab: chrome.tabs && chrome.tabs.onCreated.addListener,
     onRemovedTab: chrome.tabs && chrome.tabs.onRemoved.addListener,
     onActivatedTab: chrome.tabs && chrome.tabs.onActivated.addListener,
-    onEnabled: chrome.management && chrome.management.onEnabled.addListener
+    onEnabled: chrome.management && chrome.management.onEnabled.addListener,
+    detectLanguage: chrome.i18n.detectLanguage
 };

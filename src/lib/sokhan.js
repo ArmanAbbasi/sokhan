@@ -36,8 +36,12 @@ class Sokhan {
         });
     }
 
-    init() {
+    identifySite() {
+        helper.getSiteLanguage().then((val) => console.log(val));
+    }
 
+    init() {
+        this.identifySite();
     }
 
     // document.addEventListener('keydown', e => this.onKeyDown(e));
