@@ -48,7 +48,7 @@ class Menu {
      * @description Get defaults from chrome store and set them internally
      * */
     setDefaults() {
-        chromeApiLayer.getStorage('gender', ({gender}) => {
+        chromeApiLayer.getStorage('gender', ({gender = 'male'}) => {
             store.setGender(gender);
             this.els.change[gender].checked = true;
         });

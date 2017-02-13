@@ -63,11 +63,6 @@ class Sokhan {
     }
 
     init() {
-        // voice.getVoices().then((test) => {
-        //     console.log(test);
-        //     helper.getSiteLanguage().then(this.identifySite);
-        // });
-
         this.initialiseAndLoadSettings();
     }
 
