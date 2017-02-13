@@ -125,7 +125,6 @@ const preferredVoices = {
 };
 
 let state = {
-    gender: 'male',
     fallbackLanguage: 'en',
     active: true,
     speed: 1.0
@@ -145,9 +144,9 @@ export default {
     setVoice: (lang, gender) => {
         let voices = speechSynthesis.getVoices();
         let preferredLangObj = preferredVoices[lang.toLowerCase()];
-        let altGender = state.gender === 'male' ? 'female' : 'male';
+        let altGender = gender === 'male' ? 'female' : 'male';
 
-        speech.voice = voices.filter((voice) => voice.name === (preferredLangObj[state.gender] || preferredLangObj[altGender]))[0];
+        speech.voice = voices.filter((voice) => voice.name === (preferredLangObj[gender] || preferredLangObj[altGender]))[0];
     },
     setGender: (genderBool) => {
         state.gender = genderBool ? 'male' : 'female';
