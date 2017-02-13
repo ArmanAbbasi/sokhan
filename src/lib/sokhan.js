@@ -19,7 +19,7 @@
 //import config from './config';
 import helper from './helper';
 // import store from '../store';
-// import chromeApiLayer from '../browser/chromeApiLayer';
+import chromeApiLayer from '../browser/chromeApiLayer';
 
 class Sokhan {
     constructor() {
@@ -27,7 +27,7 @@ class Sokhan {
     }
 
     elementFocused(el) {
-        console.log(helper.getTextFromEl(el));
+        chromeApiLayer.speak(helper.getTextFromEl(el));
     }
 
     bindEvents() {
