@@ -23,14 +23,21 @@ import chromeApiLayer from '../browser/chromeApiLayer';
 class Sokhan {
     constructor() {
         this.bindEvents();
-    }
-
-    elementFocused(el) {
-        chromeApiLayer.speak(helper.getTextFromEl(el));
+        this.init();
     }
 
     bindEvents() {
-        helper.watch('activeElement', document.activeElement, this.elementFocused.bind(this));
+        helper.watch('activeElement', document.activeElement, (el) => {
+            if (chromeApiLayer.isSpeaking()) {
+                chromeApiLayer.stopSpeak();
+            }
+
+            chromeApiLayer.speak(helper.getTextFromEl(el));
+        });
+    }
+
+    init() {
+
     }
 
     // document.addEventListener('keydown', e => this.onKeyDown(e));

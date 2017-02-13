@@ -1,4 +1,4 @@
-/* globals chrome, speechSynthesis */
+/* globals chrome, speechSynthesis, SpeechSynthesisUtterance */
 
 export default {
     getStorage: chrome.storage.sync.get,
@@ -24,13 +24,12 @@ export default {
             speechSynthesis.speak(utter);
         };
     })(),
-    stopSpeak: (() => {
-        if (chrome.tts && chrome.tts.stop) {
-            return chrome.tts.stop;
-        }
-
-        return speechSynthesis.cancel;
-    })(),
+    stopSpeak: () => {
+        return (chrome.tts && chrome.tts.stop()) || speechSynthesis.cancel();
+    },
+    isSpeaking: () => {
+        return speechSynthesis.speaking;
+    },
     onCommand: chrome.commands && chrome.commands.onCommand.addListener,
     onNewTab: chrome.tabs && chrome.tabs.onCreated.addListener,
     onRemovedTab: chrome.tabs && chrome.tabs.onRemoved.addListener,
