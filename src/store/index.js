@@ -1,6 +1,7 @@
 let state = {
     sokhanActive: true,
-    speechRate: 1.0
+    speechRate: 1.0,
+    gender: 'male'
 };
 
 export default {
@@ -18,5 +19,11 @@ export default {
     },
     decrementSpeechRate: () => {
         state.speechRate -= 1;
+    },
+    setGender: (gender) => {
+        state.gender = gender;
+    },
+    getGender: () => {
+        return state.gender;
     }
 };

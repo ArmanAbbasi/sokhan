@@ -37,15 +37,38 @@ class Sokhan {
         });
     }
 
-    identifySite(lang) {
-        voice.setVoice(lang);
-        voice.speak(helper.getSiteTitle());
+    initialiseAndLoadSettings() {
+        let gender = new Promise((resolve) => {
+            chromeApiLayer.getStorage('gender', ({gender}) => {
+                resolve(gender);
+            });
+        });
+        let isSokhanActive = new Promise((resolve) => {
+            chromeApiLayer.getStorage('active', ({active}) => {
+                resolve(active);
+            });
+        });
+        let detectedSiteLanguage = helper.getSiteLanguage();
+        let fallbackLanguage = new Promise((resolve) => {
+            chromeApiLayer.getStorage('languageSelection', ({languageSelection}) => {
+                resolve(languageSelection);
+            });
+        });
+        let voices = voice.getVoices();
+
+        return Promise.all([gender, isSokhanActive, detectedSiteLanguage, fallbackLanguage, voices]).then(values => {
+            voice.setVoice(values[2] || values[3], values[0]);
+            voice.speak(helper.getSiteTitle());
+        });
     }
 
     init() {
-        voice.onLoaded(() => {
-            helper.getSiteLanguage().then(this.identifySite);
-        });
+        // voice.getVoices().then((test) => {
+        //     console.log(test);
+        //     helper.getSiteLanguage().then(this.identifySite);
+        // });
+
+        this.initialiseAndLoadSettings();
     }
 
     // document.addEventListener('keydown', e => this.onKeyDown(e));

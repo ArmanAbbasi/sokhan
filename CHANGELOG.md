@@ -1,10 +1,10 @@
 3.0
-Refactored the code to ES6 and parsed for older browser versions
+Complete rewrite of code, many bug fixes and improvements
 Added option to set fallback language
-Many bug fixes
-Removed option to disable automatic language selection
+Removed option to disable automatic language selection, it will always attempt to automatically detect
 Removed reading text on mouse hover, it was a bad idea.
-Will always read out the items in the menu, even if paused.
+Will always read out the items in the Sokhan menu, even if paused.
+No longer requires website refresh after settings change
 
 2.1
 Upgraded build process

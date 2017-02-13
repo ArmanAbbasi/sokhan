@@ -24,12 +24,11 @@ import store from '../store';
  * */
 class Menu {
     constructor () {
-        this.default = {'voiceName': 'Daniel'};
         this.els = {
             change: {
                 male: document.getElementById('male'),
                 female: document.getElementById('female'),
-                fallbackLanguage: document.getElementById('languageSelection')
+                fallbackLanguage: document.getElementById('fallbackLanguage')
             },
 
             click: {
@@ -50,12 +49,8 @@ class Menu {
      * */
     setDefaults() {
         chromeApiLayer.getStorage('gender', ({gender}) => {
-            if (gender) {
-                this.els.change.male.checked = true;
-            } else {
-                this.default.voiceName = 'Samantha';
-                this.els.change.female.checked = true;
-            }
+            store.setGender(gender);
+            this.els.change[gender].checked = true;
         });
 
         chromeApiLayer.getStorage('active', ({active}) => {
@@ -63,9 +58,9 @@ class Menu {
             chromeApiLayer.setIcon(store.getSokhanActive());
         });
 
-        chromeApiLayer.getStorage('languageSelection', ({languageSelection}) => {
-            if (languageSelection) {
-                document.querySelector(`[value="${languageSelection}"]`).selected = true;
+        chromeApiLayer.getStorage('fallbackLanguage', ({fallbackLanguage}) => {
+            if (fallbackLanguage) {
+                document.querySelector(`[value="${fallbackLanguage}"]`).selected = true;
             }
         });
     }
@@ -77,19 +72,19 @@ class Menu {
      * */
     onStateChange({currentTarget}) {
         const type = currentTarget.getAttribute('name');
-        let checked = currentTarget.checked;
+        let value = currentTarget.checked;
 
         if (type === 'active') {
-            checked = store.toggleSokhanActive();
+            value = store.toggleSokhanActive();
             chromeApiLayer.setIcon(store.getSokhanActive());
         } else if (type === 'gender') {
-            checked = currentTarget.value !== 'female';
-        } else if (type === 'languageSelection') {
-            checked = currentTarget.selectedOptions[0].value;
+            value = currentTarget.value;
+        } else if (type === 'fallbackLanguage') {
+            value = currentTarget.selectedOptions[0].value;
             chromeApiLayer.speak(`Selected: ${currentTarget.selectedOptions[0].textContent}`);
         }
 
-        chromeApiLayer.setStorage({[type]: checked});
+        chromeApiLayer.setStorage({[type]: value});
     }
 
     /**
@@ -105,7 +100,9 @@ class Menu {
             text += `, ${currentTarget.children.length} options to choose from, current selection: ${currentTarget.selectedOptions[0].textContent}, the options are: ${currentTarget.textContent.trim().replace(/\s+/g, ',')}.`;
         }
 
-        chromeApiLayer.speak(text, this.default);
+        chromeApiLayer.speak(text, {
+            'voiceName': `${store.getGender() === 'male' ? 'Google UK English Male' : 'Google UK English Female'}`
+        });
     }
 
     /**

@@ -1,4 +1,21 @@
+/**
+ * Copyright (C) 2016  Arman Abbasi
+ *
+ * Sokhan is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 /* globals speechSynthesis, SpeechSynthesisUtterance */
+
 let speech = new SpeechSynthesisUtterance('');
 const preferredVoices = {
     'en': { //English
@@ -107,6 +124,13 @@ const preferredVoices = {
     }
 };
 
+let state = {
+    gender: 'male',
+    fallbackLanguage: 'en',
+    active: true,
+    speed: 1.0
+};
+
 export default {
     speak: (text) => {
         speech.text = text;
@@ -118,12 +142,30 @@ export default {
     isSpeaking: () => {
         return speechSynthesis.speaking;
     },
-    setVoice: (lang) => {
+    setVoice: (lang, gender) => {
         let voices = speechSynthesis.getVoices();
+        let preferredLangObj = preferredVoices[lang.toLowerCase()];
+        let altGender = state.gender === 'male' ? 'female' : 'male';
 
-        speech.voice = voices.filter((voice) => voice.name === preferredVoices[lang.toLowerCase()].male)[0];
+        speech.voice = voices.filter((voice) => voice.name === (preferredLangObj[state.gender] || preferredLangObj[altGender]))[0];
     },
-    onLoaded: (callback) => {
-        speechSynthesis.addEventListener('voiceschanged', callback);
+    setGender: (genderBool) => {
+        state.gender = genderBool ? 'male' : 'female';
+    },
+    setFallbackLanguage: (lang) => {
+        state.fallbackLanguage = lang;
+    },
+    setSpeed: () => {
+
+    },
+    setActive: (isActive) => {
+        state.active = isActive;
+    },
+    getVoices: () => {
+        return new Promise((resolve) => {
+            speechSynthesis.addEventListener('voiceschanged', () => {
+                resolve(speechSynthesis.getVoices());
+            });
+        });
     }
 };

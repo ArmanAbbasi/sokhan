@@ -6,7 +6,7 @@
     <body class="menu">
         <div tabindex="-1">
             <img class="menu__logo" src="../images/sokhan-64.png" alt="Sokhan Logo" tabindex="-1"/><h1 class="menu__title" tabindex="-1" aria-label="Heading: Sokhan">okhan</h1>
-            <p id="introduction" aria-label="=" tabindex="1">Change screen reader settings (requires website refresh).</p>
+            <p id="introduction" aria-label="=" tabindex="1">Change screen reader settings.</p>
             <h2 class="menu__sub-title" aria-label="Heading: Voice Gender" tabindex="2">Voice</h2>
             <span id="selectMale" aria-label="Selection: Choose male voice, if available" tabindex="3">
                 <input tabindex="-1" id="male" type="radio" name="gender" value="male" checked/>
@@ -18,7 +18,7 @@
             </span>
             <div class="menu__separator">
                 <label tabindex="5" aria-label="Fallback Language, when the language cannot be detected on a website, it will fallback to the selected language" for="languageSelection">Fallback Language</label>
-                <select class="menu__selection" tabindex="6" aria-label="Selection: Fallback Language" name="languageSelection" id="languageSelection">
+                <select class="menu__selection" tabindex="6" aria-label="Selection: Fallback Language" name="fallbackLanguage" id="fallbackLanguage">
                     <option value="en">English</option>
                     <option value="nl">Dutch</option>
                     <option value="id">Indonesian</option>
