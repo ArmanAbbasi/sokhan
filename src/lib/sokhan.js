@@ -38,12 +38,14 @@ class Sokhan {
     }
 
     identifySite(lang) {
-        console.log(lang);
+        voice.setVoice(lang);
         voice.speak(helper.getSiteTitle());
     }
 
     init() {
-        helper.getSiteLanguage().then(this.identifySite);
+        voice.onLoaded(() => {
+            helper.getSiteLanguage().then(this.identifySite);
+        });
     }
 
     // document.addEventListener('keydown', e => this.onKeyDown(e));
