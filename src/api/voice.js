@@ -124,12 +124,6 @@ const preferredVoices = {
     }
 };
 
-let state = {
-    fallbackLanguage: 'en',
-    active: true,
-    speed: 1.0
-};
-
 export default {
     speak: (text) => {
         speech.text = text;
@@ -148,17 +142,11 @@ export default {
 
         speech.voice = voices.filter((voice) => voice.name === (preferredLangObj[gender] || preferredLangObj[altGender]))[0];
     },
-    setGender: (genderBool) => {
-        state.gender = genderBool ? 'male' : 'female';
+    incrementSpeed: () => {
+        speech.rate += .1;
     },
-    setFallbackLanguage: (lang) => {
-        state.fallbackLanguage = lang;
-    },
-    setSpeed: () => {
-
-    },
-    setActive: (isActive) => {
-        state.active = isActive;
+    decrementSpeed: () => {
+        speech.rate -= .1;
     },
     getVoices: () => {
         return new Promise((resolve) => {

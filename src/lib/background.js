@@ -42,6 +42,7 @@ class Background {
         });
 
         chromeApiLayer.onCommand((command) => {
+            console.log(command);
             if (command === 'Ctrl+Right') {
                 store.incrementSpeechRate();
                 chromeApiLayer.setStorage({'rate': store.getSpeechRate()});
@@ -54,6 +55,7 @@ class Background {
         });
 
         chromeApiLayer.getStorage('active', ({active}) => {
+            console.log(active);
             store.setSokhanActive(active);
             chromeApiLayer.setIcon(store.getSokhanActive());
         });

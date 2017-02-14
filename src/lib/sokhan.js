@@ -23,7 +23,6 @@ import voice from '../api/voice';
 
 class Sokhan {
     constructor() {
-        this.bindEvents();
         this.init();
     }
 
@@ -64,6 +63,7 @@ class Sokhan {
 
     init() {
         this.initialiseAndLoadSettings();
+        this.bindEvents();
     }
 
     // document.addEventListener('keydown', e => this.onKeyDown(e));
